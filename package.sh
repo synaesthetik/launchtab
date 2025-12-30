@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Package PM Guidebook extension for Mozilla submission
+# Package LaunchTab extension for Mozilla submission
 
-echo "🎁 Packaging PM Guidebook extension..."
+echo "🎁 Packaging LaunchTab extension..."
 
 # Check if icons exist
 if [ ! -f "icons/icon16.png" ] || [ ! -f "icons/icon48.png" ] || [ ! -f "icons/icon128.png" ]; then
@@ -20,10 +20,10 @@ if [ ! -f "icons/icon16.png" ] || [ ! -f "icons/icon48.png" ] || [ ! -f "icons/i
 fi
 
 # Remove old package if exists
-rm -f pm-guidebook.zip
+rm -f launchtab.zip
 
 # Create ZIP package
-zip -r pm-guidebook.zip \
+zip -r launchtab.zip \
   manifest.json \
   project-management-runbook.html \
   options.html \
@@ -34,12 +34,12 @@ zip -r pm-guidebook.zip \
   README.md \
   icons/*.png 2>/dev/null
 
-echo "✅ Package created: pm-guidebook.zip"
+echo "✅ Package created: launchtab.zip"
 echo ""
 echo "Next steps:"
 echo "1. Go to https://addons.mozilla.org/developers/addon/submit/distribution"
 echo "2. Choose 'On your own' (self-distributed)"
-echo "3. Upload pm-guidebook.zip"
+echo "3. Upload launchtab.zip"
 echo "4. Wait for automatic signing (~5-15 minutes)"
 echo "5. Download and install the signed .xpi file"
 echo ""
