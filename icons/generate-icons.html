@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+    <style>
+        body {
+            font-family: system-ui;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        canvas {
+            margin: 10px;
+            border: 2px solid #333;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #a855f7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #9333ea;
+        }
+    </style>
+</head>
+<body>
+    <h2>PM Guidebook Icon Generator</h2>
+    <p>Click the buttons below to download each icon size:</p>
+    
+    <div>
+        <canvas id="icon16" width="16" height="16"></canvas>
+        <button onclick="downloadIcon('icon16', 'icon16.png')">Download 16x16</button>
+    </div>
+    
+    <div>
+        <canvas id="icon48" width="48" height="48"></canvas>
+        <button onclick="downloadIcon('icon48', 'icon48.png')">Download 48x48</button>
+    </div>
+    
+    <div>
+        <canvas id="icon128" width="128" height="128"></canvas>
+        <button onclick="downloadIcon('icon128', 'icon128.png')">Download 128x128</button>
+    </div>
+
+    <script>
+        // Draw icons
+        function drawIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#a855f7');
+            gradient.addColorStop(1, '#14b8a6');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw simplified planning/checklist icon
+            ctx.fillStyle = 'white';
+            const scale = size / 16;
+            
+            // Paper/document shape
+            ctx.fillRect(4 * scale, 3 * scale, 8 * scale, 10 * scale);
+            
+            // Checkmarks
+            ctx.fillStyle = '#14b8a6';
+            ctx.fillRect(5 * scale, 5 * scale, 2 * scale, 1 * scale);
+            ctx.fillRect(5 * scale, 8 * scale, 2 * scale, 1 * scale);
+            ctx.fillRect(5 * scale, 11 * scale, 2 * scale, 1 * scale);
+            
+            // Lines
+            ctx.fillRect(8 * scale, 5 * scale, 3 * scale, 1 * scale);
+            ctx.fillRect(8 * scale, 8 * scale, 3 * scale, 1 * scale);
+            ctx.fillRect(8 * scale, 11 * scale, 3 * scale, 1 * scale);
+        }
+        
+        drawIcon('icon16', 16);
+        drawIcon('icon48', 48);
+        drawIcon('icon128', 128);
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</body>
+</html>

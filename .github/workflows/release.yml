@@ -1,0 +1,57 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.1, v1.1.0, etc.
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install web-ext
+        run: npm install -g web-ext
+      
+      - name: Generate icons (if needed)
+        run: |
+          # If you have a script to generate icons, run it here
+          # Otherwise, ensure icons are committed to the repo
+          echo "Icons should be pre-generated and committed"
+      
+      - name: Package extension
+        run: web-ext build --overwrite-dest
+      
+      - name: Submit to Mozilla Add-ons
+        run: |
+          web-ext sign \
+            --api-key="${{ secrets.WEB_EXT_API_KEY }}" \
+            --api-secret="${{ secrets.WEB_EXT_API_SECRET }}" \
+            --channel=unlisted
+        # Use --channel=listed if you want it publicly listed on AMO
+      
+      - name: Upload signed XPI as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-extension
+          path: web-ext-artifacts/*.xpi
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: web-ext-artifacts/*.xpi
+          body: |
+            Extension version ${{ github.ref_name }} signed and ready to install.
+            
+            **Installation:**
+            1. Download the .xpi file below
+            2. Drag it to Firefox's about:addons page
+            3. Confirm installation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
