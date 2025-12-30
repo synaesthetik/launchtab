@@ -934,6 +934,50 @@
             margin-top: 0;
             color: var(--primary-light);
         }
+
+        .ticket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .ticket-card .remove-ticket {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .ticket-card .remove-ticket:hover {
+            background: var(--bg-secondary);
+            color: var(--danger);
+        }
+
+        .ticket-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -1124,7 +1168,7 @@
                             <h4>🏗️ By System</h4>
                             <p>What systems/services are involved?</p>
                         </div>
-                        <div class="option-card" onclick="selectDecomposition('reliability')">
+                        <div class="option-card" onclick="selectDecomposition('tasks')">
                             <h4>🎯 By Action</h4>
                             <p>What needs to happen?</p>
                         </div>
@@ -1197,29 +1241,18 @@
                 <div class="step" id="step5">
                     <div class="step-header">
                         <div class="step-number">5</div>
-                        <div class="step-title">What do you actually need to do?</div>
+                        <div class="step-title">Initial JIRA Tickets</div>
                     </div>
 
                     <div class="admonition">
-                        <p>Break your starting point into actual work. Things you could do in a day or less.</p>
+                        <p>Create the first few tickets you know you'll need. You can always add more later.</p>
                     </div>
 
-                    <div class="info-box tip">
-                        <h4>Think in terms of verbs:</h4>
-                        <ul>
-                            <li>What do you need to <strong>look at</strong> or <strong>understand</strong>?</li>
-                            <li>What do you need to <strong>build</strong> or <strong>create</strong>?</li>
-                            <li>What do you need to <strong>test</strong> or <strong>validate</strong>?</li>
-                            <li>What do you need to <strong>document</strong> or <strong>communicate</strong>?</li>
-                            <li>What needs to be <strong>deployed</strong> or <strong>rolled out</strong>?</li>
-                        </ul>
+                    <div id="ticketsContainer">
+                        <!-- Tickets will be added here dynamically -->
                     </div>
 
-                    <div class="input-group">
-                        <label>Just list out tasks (rough draft, you'll refine these later):</label>
-                        <textarea id="initialTasks" rows="8" placeholder="Just stream of consciousness list of things to do... use checkboxes if you want (☐) or just bullet points. Whatever comes to mind as actual work items."></textarea>
-                    </div>
-
+                    <button class="btn" onclick="addTicketForm()" style="margin-bottom: 1rem;">+ Add Ticket</button>
                     <button class="btn btn-secondary" onclick="completeStep(5)">Generate Brief →</button>
                 </div>
 
@@ -1336,10 +1369,54 @@
             decompositionType: '',
             components: [],
             strategy: '',
-            tasks: []
+            tickets: []
         };
 
         let currentStep = 0;
+        let ticketCounter = 0;
+
+        // Ticket management functions
+        function addTicketForm() {
+            ticketCounter++;
+            const container = document.getElementById('ticketsContainer');
+            const ticketCard = document.createElement('div');
+            ticketCard.className = 'ticket-card';
+            ticketCard.id = `ticket-${ticketCounter}`;
+            ticketCard.innerHTML = `
+                <button class="remove-ticket" onclick="removeTicket(${ticketCounter})" title="Remove ticket">×</button>
+                <span class="ticket-number">Ticket #${ticketCounter}</span>
+                <div class="input-group">
+                    <label for="ticket-title-${ticketCounter}">Title:</label>
+                    <input type="text" id="ticket-title-${ticketCounter}" placeholder="Brief, action-oriented title...">
+                </div>
+                <div class="input-group">
+                    <label for="ticket-desc-${ticketCounter}">Description:</label>
+                    <textarea id="ticket-desc-${ticketCounter}" rows="4" placeholder="What needs to be done, why, and any relevant context..."></textarea>
+                </div>
+            `;
+            container.appendChild(ticketCard);
+        }
+
+        function removeTicket(ticketId) {
+            const ticket = document.getElementById(`ticket-${ticketId}`);
+            if (ticket) {
+                ticket.remove();
+            }
+        }
+
+        function collectTickets() {
+            const tickets = [];
+            const ticketCards = document.querySelectorAll('.ticket-card');
+            ticketCards.forEach(card => {
+                const ticketId = card.id.split('-')[1];
+                const title = document.getElementById(`ticket-title-${ticketId}`).value.trim();
+                const description = document.getElementById(`ticket-desc-${ticketId}`).value.trim();
+                if (title || description) {
+                    tickets.push({ title, description });
+                }
+            });
+            return tickets;
+        }
 
         // Understanding check functions
         function answerUnderstanding(answer) {
@@ -1410,9 +1487,9 @@
                     }
                     break;
                 case 5:
-                    projectData.tasks = document.getElementById('initialTasks').value;
-                    if (!projectData.tasks) {
-                        alert('Please add some initial tasks.');
+                    projectData.tickets = collectTickets();
+                    if (projectData.tickets.length === 0) {
+                        alert('Please add at least one ticket.');
                         return;
                     }
                     generateFinalBrief();
@@ -1548,6 +1625,13 @@
             const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
             const challengesList = projectData.challenges.map((c, i) => `<li>${c}</li>`).join('');
             
+            const ticketsList = projectData.tickets.map((ticket, i) => `
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-tertiary); border-left: 3px solid var(--teal); border-radius: 0.25rem;">
+                    <h4 style="margin-top: 0; color: var(--teal-light);">🎫 ${ticket.title || 'Untitled Ticket'}</h4>
+                    <p style="margin: 0; color: var(--text-secondary);">${ticket.description || 'No description provided'}</p>
+                </div>
+            `).join('');
+            
             const brief = `
                 <h3>🎯 Project Planning Brief</h3>
                 
@@ -1566,16 +1650,17 @@
                 <h4>Starting Strategy: ${capitalizeStrategy(projectData.strategy)}</h4>
                 <p>${getStrategyDescription(projectData.strategy)}</p>
                 
-                <h4>Initial Tasks</h4>
-                <pre>${projectData.tasks}</pre>
+                <h4>Initial JIRA Tickets to Create</h4>
+                ${ticketsList}
                 
                 <div class="admonition">
                     <h4>📅 Next Actions</h4>
                     <ul class="checklist">
-                        <li>Review this brief with team and stakeholders</li>
-                        <li>Set up task tracking system (Jira, GitHub, Trello)</li>
-                        <li>Schedule project kickoff</li>
-                        <li>Begin first ${projectData.strategy} task</li>
+                        <li>Copy this and clean it up with AI</li>
+                        <li>Create these tickets in JIRA</li>
+                        <li>Talk it through with someone</li>
+                        <li>Start the first task</li>
+                        <li>Update as you learn more</li>
                     </ul>
                 </div>
                 
@@ -1629,6 +1714,9 @@
             const date = new Date().toLocaleDateString();
             const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
             const challengesFormatted = projectData.challenges.map((c, i) => `${i + 1}. ${c}`).join('\n');
+            const ticketsFormatted = projectData.tickets.map((ticket, i) => 
+                `### Ticket ${i + 1}: ${ticket.title || 'Untitled'}\n${ticket.description || 'No description'}\n`
+            ).join('\n');
             
             return `# Project Planning Brief
 
@@ -1647,14 +1735,15 @@ ${componentsFormatted}
 ## Starting Strategy: ${capitalizeStrategy(projectData.strategy)}
 ${getStrategyDescription(projectData.strategy)}
 
-## Initial Tasks
-${projectData.tasks}
+## Initial JIRA Tickets to Create
+${ticketsFormatted}
 
 ## Next Actions
-- [ ] Review this brief with team and stakeholders
-- [ ] Set up task tracking system (Jira, GitHub, Trello)
-- [ ] Schedule project kickoff
-- [ ] Begin first ${projectData.strategy} task
+- [ ] Copy this and clean it up with AI
+- [ ] Create these tickets in JIRA
+- [ ] Talk it through with someone
+- [ ] Start the first task
+- [ ] Update as you learn more
 
 ---
 *Generated: ${date}*
