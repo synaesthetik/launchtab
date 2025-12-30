@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRE Project Planning Runbook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #a855f7;
+            --primary-dark: #7e22ce;
+            --primary-light: #c084fc;
+            --teal: #14b8a6;
+            --teal-dark: #0d9488;
+            --teal-light: #2dd4bf;
+            --bg: #1a1a1a;
+            --bg-secondary: #252525;
+            --bg-tertiary: #2d2d2d;
+            --bg-card: #212121;
+            --text: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --border: #404040;
+            --success: #14b8a6;
+            --warning: #fbbf24;
+            --danger: #f472b6;
+            --code-bg: #1a1a1a;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 25px -3px rgb(0 0 0 / 0.5);
+            --shadow-glow: 0 0 20px rgb(168 85 247 / 0.4);
+            --shadow-teal: 0 0 15px rgb(20 184 166 / 0.3);
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+            --gradient-teal: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            --gradient-secondary: linear-gradient(135deg, #7e22ce 0%, #a855f7 50%, #14b8a6 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: #0f0f0f;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--bg-secondary);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+            box-shadow: inset -1px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .sidebar .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: var(--bg-tertiary);
+            color: var(--teal);
+            transform: translateX(4px);
+            border-left: 2px solid var(--teal);
+            padding-left: calc(0.75rem - 2px);
+        }
+
+        .nav-links a.active {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Main Content */
+        .content {
+            padding: 3rem;
+            max-width: 900px;
+            overflow-y: auto;
+        }
+
+        .content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(to right, var(--bg), var(--bg)) padding-box,
+                        var(--gradient-primary) border-box;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--teal-light);
+            font-weight: 600;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .content h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 70%;
+            background: var(--gradient-teal);
+            border-radius: 2px;
+            box-shadow: var(--shadow-teal);
+        }
+
+        .content h4 {
+            font-size: 1.125rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .content ul, .content ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Code blocks */
+        .content pre {
+            background: var(--code-bg);
+            color: #e5e5e5;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(168, 85, 247, 0.03);
+        }
+
+        .content code {
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+            font-family: 'Courier New', monospace;
+            color: var(--teal-light);
+        }
+
+        .content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Tables */
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .content table th,
+        .content table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .content table th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .content table td {
+            color: var(--text-secondary);
+            background: var(--bg-card);
+        }
+
+        .content table tr:hover td {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: var(--bg-card);
+            border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.25rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-primary);
+            opacity: 0.3;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+            background: var(--bg-card);
+        }
+
+        .info-box.warning::before {
+            background: var(--warning);
+        }
+
+        .info-box.danger {
+            border-left-color: var(--danger);
+            background: var(--bg-card);
+        }
+
+        .info-box.danger::before {
+            background: var(--danger);
+        }
+
+        .info-box.success {
+            border-left-color: var(--teal);
+            background: var(--bg-card);
+        }
+
+        .info-box.success::before {
+            background: var(--gradient-teal);
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 100;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Section spacing */
+        .section {
+            scroll-margin-top: 2rem;
+        }
+
+        /* Checkboxes in lists */
+        .content ul.checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content ul.checklist li {
+            padding-left: 1.75rem;
+            position: relative;
+        }
+
+        .content ul.checklist li:before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-size: 1.125rem;
+            text-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
+        }
+
+        /* Highlight current section */
+        .content .section {
+            transition: opacity 0.3s;
+        }
+
+        /* Interactive Flow Styles */
+        .flow-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            margin-bottom: 2rem;
+            opacity: 0.4;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .step.completed {
+            opacity: 0.7;
+            pointer-events: all;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .step.completed .step-number {
+            background: var(--gradient-teal);
+            box-shadow: var(--shadow-teal);
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .input-group input[type="text"],
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input[type="text"]:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.btn-secondary {
+            background: var(--gradient-teal);
+            box-shadow: var(--shadow-teal);
+        }
+
+        .btn.btn-secondary:hover {
+            box-shadow: 0 0 25px rgba(20, 184, 166, 0.5);
+        }
+
+        .reveal {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .reveal.open {
+            max-height: 2000px;
+        }
+
+        .admonition {
+            background: var(--bg-card);
+            border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0.375rem;
+            position: relative;
+        }
+
+        .admonition::before {
+            content: '💡';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-card);
+            padding: 0 0.25rem;
+            font-size: 1.25rem;
+        }
+
+        .admonition.tip {
+            border-left-color: var(--teal);
+        }
+
+        .admonition.tip::before {
+            content: '✨';
+        }
+
+        .admonition.warning {
+            border-left-color: var(--warning);
+        }
+
+        .admonition.warning::before {
+            content: '⚠️';
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+
+        .output-box {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            color: var(--text);
+        }
+
+        .output-box h4 {
+            color: var(--teal-light);
+            margin-top: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        .tag.selected {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .option-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .option-card.selected {
+            border-color: var(--teal);
+            background: var(--bg-tertiary);
+            box-shadow: var(--shadow-teal);
+        }
+
+        .option-card h4 {
+            margin-top: 0;
+            color: var(--primary-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h1>SRE Runbook</h1>
+            <p class="subtitle">Break down reliability work, reduce toil</p>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-section-title">Quick Start</div>
+                    <ul class="nav-links">
+                        <li><a href="#step1">🚀 Start Wizard</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Resources</div>
+                    <ul class="nav-links">
+                        <li><a href="#" onclick="showReference('principles'); return false;">📖 Principles</a></li>
+                        <li><a href="#" onclick="showReference('methodologies'); return false;">🛠️ Methodologies</a></li>
+                        <li><a href="#" onclick="showReference('pitfalls'); return false;">⚠️ Pitfalls</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <h1>SRE Project Planner</h1>
+            <p>Break down reliability work into actionable tasks.</p>
+
+            <div class="flow-container">
+                <!-- Step 0: Problem Understanding Check -->
+                <div class="step active" id="step0">
+                    <div class="step-header">
+                        <div class="step-number">?</div>
+                        <div class="step-title">Do you understand the problem?</div>
+                    </div>
+                    <div class="info-box">
+                        <p>Before we start planning, let's make sure you have enough context.</p>
+                    </div>
+                    <div class="input-group">
+                        <label style="font-size: 1.125rem; margin-bottom: 1rem;">Do you completely understand the problem you're trying to solve?</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn" style="flex: 1;" onclick="answerUnderstanding('yes')">✓ Yes</button>
+                            <button class="btn btn-secondary" style="flex: 1;" onclick="answerUnderstanding('no')">✗ No</button>
+                        </div>
+                    </div>
+                    <div class="reveal" id="needInfoPath">
+                        <div class="admonition warning">
+                            <p>No problem! Let's find the information you need.</p>
+                        </div>
+                        <div class="admonition tip">
+                            <h4>🔍 Ownership and context resources</h4>
+                            <ul style="margin-left: 1.5rem;">
+                                <li>Search <a href="https://app.glean.com/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Glean</a> for your problem statement or related keywords.</li>
+                                <li>Check <a href="https://docs.google.com/spreadsheets/d/1aWvoA2zZGciXpx-RXea7SgExId5GDn21P2Bfk1DRTrU/edit?gid=2108134656#gid=2108134656" target="_blank" style="color: var(--teal-light); text-decoration: underline;">R&D Team Ownership</a> to identify who you should involve.</li>
+                                <li>Identify and take note of relevant code in <a href="https://github.com/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Github</a>.</li>
+                                <li>Search <a href="https://www.notion.so/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Notion</a> that relate to your issue.</li>
+                            </ul>
+                        </div>
+                        <div class="admonition" style="border-left-color: var(--primary);">
+                            <h4>🤖 Ask AI things like:</h4>
+                            <p style="margin-bottom: 0.5rem;">Try asking GitHub Copilot questions like:</p>
+                            <ul style="margin-left: 1.5rem;">
+                                <li>"Search our codebase for recent changes related to [your problem area] and summarize what you find"</li>
+                                <li>"Find similar issues or incidents in our documentation and explain how they were resolved"</li>
+                                <li>"Analyze the code in [repository/file] and explain how [system/feature] works"</li>
+                                <li>"Search Glean for information about [problem domain] and summarize the key teams and systems involved"</li>
+                            </ul>
+                        </div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);"><em>Once you have the information, come back and restart the wizard.</em></p>
+                        <button class="btn" onclick="resetWizard()">↻ Start Over with New Info</button>
+                    </div>
+                    <div class="reveal" id="proceedToStep1">
+                        <div class="info-box success">
+                            <p>Great! Let's document what you know.</p>
+                        </div>
+                        <button class="btn" onclick="proceedFromUnderstanding()">Continue →</button>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 1: Problem Statement -->
+                <div class="step" id="step1">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">What's the problem?</div>
+                    </div>
+                    <div class="info-box tip">
+                        <p>Focus on incidents, toil, or operational pain. Be specific.</p>
+                    </div>
+                    <div class="input-group">
+                        <label for="problemStatement">Problem:</label>
+                        <textarea id="problemStatement" placeholder="DB connection pool exhausts during traffic spikes. 5xx errors, timeouts. Manual restarts 2-3x/week. Alerting catches it too late."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="successCriteria">Success looks like:</label>
+                        <textarea id="successCriteria" placeholder="Zero pool exhaustion incidents. 99.9% SLO maintained. Auto-scaling prevents manual work. 15min alert lead time. <10% error budget."></textarea>
+                    </div>
+                    <button class="btn" onclick="completeStep(1)">Next →</button>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 2: Project Scope -->
+                <div class="step" id="step2">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Scope</div>
+                    </div>
+                    <div class="output-box" id="problemSummary"></div>
+                    
+                    <div class="admonition">
+                        <p>Set boundaries. What's in/out of scope?</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="projectName">Name:</label>
+                        <input type="text" id="projectName" placeholder="DB Connection Pool Auto-Scaling">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="constraints">Constraints:</label>
+                        <textarea id="constraints" placeholder="3 weeks. Before Q1 traffic. Low-traffic deploy window. Needs metrics upgrade. 1 SRE + 1 eng."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="stakeholders">Stakeholders:</label>
+                        <input type="text" id="stakeholders" placeholder="Platform SRE, DB team, Backend eng, On-call">
+                    </div>
+
+                    <button class="btn" onclick="completeStep(2)">Next →</button>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 3: Breaking Down -->
+                <div class="step" id="step3">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Break It Down</div>
+                    </div>
+
+                    <div class="admonition tip">
+                        <p>Choose decomposition approach:</p>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectDecomposition('infrastructure')">
+                            <h4>🏗️ Infrastructure</h4>
+                            <p>App, DB, Network, Observability</p>
+                        </div>
+                        <div class="option-card" onclick="selectDecomposition('reliability')">
+                            <h4>🎯 Reliability</h4>
+                            <p>Monitor, Scale, Recover, Prevent</p>
+                        </div>
+                        <div class="option-card" onclick="selectDecomposition('workflow')">
+                            <h4>🔄 Workflow</h4>
+                            <p>Deploy → Monitor → Alert → Respond</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal" id="componentInput">
+                        <div class="input-group">
+                            <label>Major components (3-8):</label>
+                            <textarea id="components" rows="6" placeholder="Connection pool config
+HPA setup
+Metrics & dashboards
+Predictive alerts
+Automated runbook
+Load testing
+Rollback plan"></textarea>
+                        </div>
+                        <button class="btn" onclick="completeStep(3)">Next →</button>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 3.5: Component Confidence Check -->
+                <div class="step" id="step3-5">
+                    <div class="step-header">
+                        <div class="step-number">?</div>
+                        <div class="step-title">Confidence Check</div>
+                    </div>
+                    <div class="output-box" id="componentsSummaryCheck"></div>
+                    <div class="input-group">
+                        <label style="font-size: 1.125rem; margin-bottom: 1rem;">Are you confident these components cover the whole problem?</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn" style="flex: 1;" onclick="answerComponentConfidence('yes')">✓ Yes</button>
+                            <button class="btn btn-secondary" style="flex: 1;" onclick="answerComponentConfidence('no')">✗ No</button>
+                        </div>
+                    </div>
+                    <div class="reveal" id="componentDoubtPath">
+                        <div class="admonition warning">
+                            <h4>That's okay! Here's how to validate:</h4>
+                            <ul>
+                                <li><strong>Talk it through:</strong> Explain your breakdown to a colleague</li>
+                                <li><strong>Compare:</strong> Look at similar past projects in Jira/docs</li>
+                                <li><strong>Use a framework:</strong> DORA metrics, SLI/SLO, incident postmortems</li>
+                                <li><strong>Ask an expert:</strong> Senior SRE, architect, or team lead</li>
+                            </ul>
+                        </div>
+                        <button class="btn" onclick="goBackToComponents()">← Revise Components</button>
+                        <button class="btn btn-secondary" onclick="proceedDespiteDoubt()">Continue Anyway →</button>
+                    </div>
+                    <div class="reveal" id="proceedToStep4">
+                        <div class="info-box success">
+                            <p>Excellent! Let's prioritize.</p>
+                        </div>
+                        <button class="btn" onclick="proceedToStep4()">Continue →</button>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 4: Prioritization -->
+                <div class="step" id="step4">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Where to Start?</div>
+                    </div>
+
+                    <div class="output-box" id="componentsSummary"></div>
+
+                    <div class="admonition warning">
+                        <p>Pick your approach:</p>
+                    </div>
+
+                    <h3>Strategy:</h3>
+                    <div class="options-grid">
+                        <div class="option-card" onclick="selectStrategy('spike')">
+                            <h4>🔬 Investigate</h4>
+                            <p><strong>When:</strong> Unknown root cause</p>
+                            <p>Time-boxed investigation</p>
+                        </div>
+                        <div class="option-card" onclick="selectStrategy('skeleton')">
+                            <h4>🦴 POC</h4>
+                            <p><strong>When:</strong> Unproven solution</p>
+                            <p>Test in staging first</p>
+                        </div>
+                        <div class="option-card" onclick="selectStrategy('dependency')">
+                            <h4>🔗 Foundation</h4>
+                            <p><strong>When:</strong> Need infrastructure</p>
+                            <p>Observability, runbooks</p>
+                        </div>
+                        <div class="option-card" onclick="selectStrategy('risk')">
+                            <h4>⚠️ Highest Impact</h4>
+                            <p><strong>When:</strong> Bleeding budget</p>
+                            <p>Stop the pain first</p>
+                        </div>
+                        <div class="option-card" onclick="selectStrategy('value')">
+                            <h4>💎 Quick Win</h4>
+                            <p><strong>When:</strong> Need relief now</p>
+                            <p>Fast toil reduction</p>
+                        </div>
+                        <div class="option-card" onclick="selectStrategy('rice')">
+                            <h4>📊 Score It</h4>
+                            <p><strong>When:</strong> Multiple priorities</p>
+                            <p>(Impact × Toil) / Effort</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal" id="strategyGuidance"></div>
+
+                    <button class="btn btn-secondary" onclick="completeStep(4)">Next →</button>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 5: Task Creation -->
+                <div class="step" id="step5">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Task List</div>
+                    </div>
+
+                    <div class="admonition">
+                        <p>Small tasks. 2-8 hours each.</p>
+                    </div>
+
+                    <div class="info-box tip">
+                        <h4>SRE Task Pattern:</h4>
+                        <ul>
+                            <li>1. Investigate - Metrics, logs, root cause</li>
+                            <li>2. Design - Plan, rollout, rollback</li>
+                            <li>3. Observe - Dashboards, SLIs first</li>
+                            <li>4. Implement - IaC, configs</li>
+                            <li>5. Test - Load test, chaos test</li>
+                            <li>6. Document - Runbooks</li>
+                            <li>7. Deploy - Gradual, monitor</li>
+                        </ul>
+                    </div>
+
+                    <div class="input-group">
+                        <label>First component tasks:</label>
+                        <textarea id="initialTasks" rows="8" placeholder="☐ Analyze pool metrics (size, wait, timeouts)
+☐ Review app connection patterns
+☐ Research optimal pool sizing
+☐ Create pool health dashboard
+☐ Test in staging with load
+☐ Document rollback procedure
+☐ Deploy to prod (low-traffic)
+☐ Monitor 48hrs, tune"></textarea>
+                    </div>
+
+                    <button class="btn btn-secondary" onclick="completeStep(5)">Generate Brief →</button>
+                </div>
+
+                <div class="flow-arrow">↓</div>
+
+                <!-- Step 6: Project Brief -->
+                <div class="step" id="step6">
+                    <div class="step-header">
+                        <div class="step-number">✓</div>
+                        <div class="step-title">Your Brief</div>
+                    </div>
+
+                    <div class="info-box success">
+                        <p>🎉 Done!</p>
+                    </div>
+
+                    <div class="output-box" id="finalBrief">
+                        <!0;
+
+        // Understanding check functions
+        function answerUnderstanding(answer) {
+            const needInfoPath = document.getElementById('needInfoPath');
+            const proceedPath = document.getElementById('proceedToStep1');
+            
+            if (answer === 'yes') {
+                needInfoPath.classList.remove('open');
+                proceedPath.classList.add('open');
+            } else {
+                proceedPath.classList.remove('open');
+                needInfoPath.classList.add('open');
+                // Reset nested paths
+                document.getElementById('needPersonPath').classList.remove('open');
+                document.getElementById('resourcesPath').classList.remove('open');
+            }
+        }
+
+        function answerKnowWhere(answer) {
+            if (answer === 'yes') {
+                document.getElementById('needPersonPath').classList.remove('open');
+                alert('Great! Gather that information and come back when ready.');
+            } else {
+                document.getElementById('needPersonPath').classList.add('open');
+            }
+        }
+
+        function answerKnowPerson(answer) {
+            if (answer === 'yes') {
+                document.getElementById('resourcesPath').classList.remove('open');
+                alert('Perfect! Reach out to them and return when you have the details.');
+            } else {
+                document.getElementById('resourcesPath').classList.add('open');
+            }
+        }
+
+        function proceedFromUnderstanding() {
+            document.getElementById('step0').classList.remove('active');
+            document.getElementById('step0').classList.add('completed');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('step1').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            currentStep = 1;
+        } Will be populated by JavaScript -->
+                    </div>
+
+                    <div class="admonition tip">
+                        <h4>Next:</h4>
+                        <ul class="checklist">
+                            <li>Review with team</li>
+                            <li>Create tickets</li>
+                            <li>Schedule maintenance window</li>
+                            <li>Set up rollback plan</li>
+                            <li>Brief on-call</li>
+                            <li>Start task 1</li>
+                    // Show components again in confidence check
+                    displayComponentsSummaryCheck();
+                        </ul>
+                    </div>
+
+                    <button class="btn" onclick="downloadBrief()">📥 Download</button>
+                    <button class="btn btn-secondary" onclick="resetWizard()">↻ Reset</button>
+                </div>
+
+                <!-- Reference Section -->
+                <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                    <details>
+                        <summary style="cursor: pointer; font-size: 1.25rem; font-weight: 600; color: var(--primary-light); margin-bottom: 1rem;">
+                            📚 Reference: Full PM Runbook
+                        </summary>
+                        <div style="margin-top: 1rem;">
+                            <p style="color: var(--text-secondary);">For detailed methodologies, frameworks, and best practices, see the complete sections below:</p>
+                            <ul style="color: var(--text-secondary);">
+                                <li><a href="#" onclick="showReference('principles')" style="color: var(--teal-light);">Core Principles</a></li>
+                                <li><a href="#" onclick="showReference('methodologies')" style="color: var(--teal-light);">Methodologies & Frameworks</a></li>
+                                <li><a href="#" onclick="showReference('pitfalls')" style="color: var(--teal-light);">Common Pitfalls to Avoid</a></li>
+                                <li><a href="#" onclick="showReference('metrics')" style="color: var(--teal-light);">Progress Tracking & Metrics</a></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop" title="Back to top">↑</div>
+
+    <script>
+        // State management
+        const projectData = {
+            problem: '',
+            success: '',
+            name: '',
+            constraints: '',
+            stakeholders: '',
+            decompositionType: '',
+            components: [],
+            strategy: '',
+            tasks: []
+        };
+
+        let currentStep = 0;
+
+        // Understanding check functions
+        function answerUnderstanding(answer) {
+            const needInfoPath = document.getElementById('needInfoPath');
+            const proceedPath = document.getElementById('proceedToStep1');
+            
+            if (answer === 'yes') {
+                needInfoPath.classList.remove('open');
+                proceedPath.classList.add('open');
+            } else {
+                proceedPath.classList.remove('open');
+                needInfoPath.classList.add('open');
+            }
+        }
+
+        function proceedFromUnderstanding() {
+            document.getElementById('step0').classList.remove('active');
+            document.getElementById('step0').classList.add('completed');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('step1').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            currentStep = 1;
+        }
+
+        // Component confidence check functions
+        function answerComponentConfidence(answer) {
+            if (answer === 'yes') {
+                document.getElementById('componentDoubtPath').classList.remove('open');
+                document.getElementById('proceedToStep4').classList.add('open');
+            } else {
+                document.getElementById('proceedToStep4').classList.remove('open');
+                document.getElementById('componentDoubtPath').classList.add('open');
+            }
+        }
+
+        function goBackToComponents() {
+            // Go back to step 3
+            document.getElementById('step3-5').classList.remove('active');
+            document.getElementById('step3-5').classList.remove('completed');
+            document.getElementById('step3').classList.remove('completed');
+            document.getElementById('step3').classList.add('active');
+            document.getElementById('step3').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            currentStep = 3;
+        }
+
+        function proceedDespiteDoubt() {
+            proceedToStep4();
+        }
+
+        function proceedToStep4() {
+            document.getElementById('step3-5').classList.remove('active');
+            document.getElementById('step3-5').classList.add('completed');
+            document.getElementById('step4').classList.add('active');
+            document.getElementById('step4').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            currentStep = 4;
+        }
+
+        function displayComponentsSummaryCheck() {
+            const componentsList = projectData.components.map(c => `<li>${c}</li>`).join('');
+            const summary = `
+                <h4>🏗️ Your Components:</h4>
+                <ul>${componentsList}</ul>
+            `;
+            document.getElementById('componentsSummaryCheck').innerHTML = summary;
+        }
+
+        // Step management
+        function completeStep(stepNum) {
+            // Collect data from current step
+            switch(stepNum) {
+                case 1:
+                    projectData.problem = document.getElementById('problemStatement').value;
+                    projectData.success = document.getElementById('successCriteria').value;
+                    if (!projectData.problem || !projectData.success) {
+                        alert('Please fill in both fields before continuing.');
+                        return;
+                    }
+                    displayProblemSummary();
+                    break;
+                case 2:
+                    projectData.name = document.getElementById('projectName').value;
+                    projectData.constraints = document.getElementById('constraints').value;
+                    projectData.stakeholders = document.getElementById('stakeholders').value;
+                    if (!projectData.name) {
+                        alert('Please give your project a name.');
+                        return;
+                    }
+                    break;
+                case 3:
+                    const componentsText = document.getElementById('components').value;
+                    projectData.components = componentsText.split('\n').filter(c => c.trim());
+                    if (projectData.components.length < 2) {
+                        alert('Please list at least 2 components.');
+                        return;
+                    }
+                    displayComponentsSummary();
+                    displayComponentsSummaryCheck();
+                    break;
+                case 4:
+                    if (!projectData.strategy) {
+                        alert('Please select a starting strategy.');
+                        return;
+                    }
+                    break;
+                case 5:
+                    projectData.tasks = document.getElementById('initialTasks').value;
+                    if (!projectData.tasks) {
+                        alert('Please add some initial tasks.');
+                        return;
+                    }
+                    generateFinalBrief();
+                    break;
+            }
+
+            // Mark current step as completed
+            document.getElementById('step' + stepNum).classList.remove('active');
+            document.getElementById('step' + stepNum).classList.add('completed');
+
+            // Activate next step (with special handling for step 3 -> 3.5)
+            let nextStepId;
+            if (stepNum === 3) {
+                nextStepId = 'step3-5';
+            } else {
+                nextStepId = 'step' + (stepNum + 1);
+            }
+            
+            if (document.getElementById(nextStepId)) {
+                document.getElementById(nextStepId).classList.add('active');
+                document.getElementById(nextStepId).scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                currentStep = stepNum + 1;
+            }
+        }
+
+        function displayProblemSummary() {
+            const summary = `
+                <h4>📋 Your Problem Statement</h4>
+                <p><strong>Problem:</strong> ${projectData.problem}</p>
+                <p><strong>Success Looks Like:</strong> ${projectData.success}</p>
+            `;
+            document.getElementById('problemSummary').innerHTML = summary;
+        }
+
+        function displayComponentsSummary() {
+            const componentsList = projectData.components.map(c => `<li>${c}</li>`).join('');
+            const summary = `
+                <h4>🏗️ Your Major Components (${projectData.decompositionType} approach)</h4>
+                <ul>${componentsList}</ul>
+            `;
+            document.getElementById('componentsSummary').innerHTML = summary;
+        }
+
+        function selectDecomposition(type) {
+            projectData.decompositionType = type;
+            
+            // Visual feedback
+            document.querySelectorAll('#step3 .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.option-card').classList.add('selected');
+
+            // Show component input
+            document.getElementById('componentInput').classList.add('open');
+        }
+
+        function selectStrategy(strategy) {
+            projectData.strategy = strategy;
+            
+            // Visual feedback
+            document.querySelectorAll('#step4 .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.option-card').classList.add('selected');
+
+            // Show guidance
+            const guidance = getStrategyGuidance(strategy);
+            const guidanceEl = document.getElementById('strategyGuidance');
+            guidanceEl.innerHTML = guidance;
+            guidanceEl.classList.add('open');
+        }
+
+        function getStrategyGuidance(strategy) {
+            const guides = {
+                spike: `
+                    <div class="admonition tip">
+                        <h4>🔬 Spike Approach Selected</h4>
+                        <p><strong>First task:</strong> Time-box 2-4 hours of research to answer key unknowns.</p>
+                        <p><strong>Deliverable:</strong> Document with findings and recommended approach.</p>
+                        <p><strong>Example:</strong> "Research feasibility of integrating Zendesk API - 3 hours"</p>
+                    </div>
+                `,
+                skeleton: `
+                    <div class="admonition tip">
+                        <h4>🦴 Walking Skeleton Approach Selected</h4>
+                        <p><strong>First task:</strong> Build the simplest end-to-end flow possible.</p>
+                        <p><strong>Goal:</strong> Prove the architecture works before building features.</p>
+                        <p><strong>Example:</strong> "Create minimal dashboard that displays one hardcoded ticket"</p>
+                    </div>
+                `,
+                dependency: `
+                    <div class="admonition tip">
+                        <h4>🔗 Dependency-First Approach Selected</h4>
+                        <p><strong>First task:</strong> Build foundations that other work depends on.</p>
+                        <p><strong>Examples:</strong> Authentication, API client, data models, CI/CD pipeline</p>
+                        <p><strong>Benefit:</strong> Unblocks parallel work streams</p>
+                    </div>
+                `,
+                risk: `
+                    <div class="admonition tip">
+                        <h4>⚠️ Risk-First Approach Selected</h4>
+                        <p><strong>First task:</strong> Tackle the scariest/most uncertain component.</p>
+                        <p><strong>Why:</strong> Fail fast or build confidence early.</p>
+                        <p><strong>Example:</strong> "Prototype real-time sync between Zendesk and Jira"</p>
+                    </div>
+                `,
+                value: `
+                    <div class="admonition tip">
+                        <h4>💎 Value-First Approach Selected</h4>
+                        <p><strong>First task:</strong> Build what delivers immediate user value.</p>
+                        <p><strong>Benefit:</strong> Quick wins, early feedback, stakeholder confidence.</p>
+                        <p><strong>Example:</strong> "Basic ticket list view with manual refresh"</p>
+                    </div>
+                `,
+                rice: `
+                    <div class="admonition tip">
+                        <h4>📊 RICE Prioritization Selected</h4>
+                        <p><strong>Next step:</strong> Score each component using RICE:</p>
+                        <p><strong>Formula:</strong> (Reach × Impact × Confidence) / Effort</p>
+                        <ul>
+                            <li>Reach: # of users/systems affected</li>
+                            <li>Impact: 3=massive, 2=high, 1=medium, 0.5=low</li>
+                            <li>Confidence: 100%=high, 80%=medium, 50%=low</li>
+                            <li>Effort: person-weeks</li>
+                        </ul>
+                        <p>Start with the highest-scoring component.</p>
+                    </div>
+                `
+            };
+            return guides[strategy] || '';
+        }
+
+        function generateFinalBrief() {
+            const date = new Date().toLocaleDateString();
+            const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
+            
+            const brief = `
+                <h3>🎯 ${projectData.name}</h3>
+                
+                <h4>Problem Statement</h4>
+                <p>${projectData.problem}</p>
+                
+                <h4>Success Criteria</h4>
+                <p>${projectData.success}</p>
+                
+                <h4>Stakeholders</h4>
+                <p>${projectData.stakeholders || 'Not specified'}</p>
+                
+                <h4>Constraints</h4>
+                <p>${projectData.constraints || 'None specified'}</p>
+                
+                <h4>Major Components (${projectData.decompositionType} decomposition)</h4>
+                <pre>${componentsFormatted}</pre>
+                
+                <h4>Starting Strategy: ${capitalizeStrategy(projectData.strategy)}</h4>
+                <p>${getStrategyDescription(projectData.strategy)}</p>
+                
+                <h4>Initial Tasks for ${projectData.components[0]}</h4>
+                <pre>${projectData.tasks}</pre>
+                
+                <div class="admonition">
+                    <h4>📅 Next Actions</h4>
+                    <ul class="checklist">
+                        <li>Review this brief with team and stakeholders</li>
+                        <li>Set up task tracking system (Jira, GitHub, Trello)</li>
+                        <li>Schedule project kickoff</li>
+                        <li>Begin first ${projectData.strategy} task</li>
+                    </ul>
+                </div>
+                
+                <p style="margin-top: 2rem; color: var(--text-secondary); font-size: 0.875rem;">
+                    <em>Generated: ${date}</em>
+                </p>
+            `;
+            
+            document.getElementById('finalBrief').innerHTML = brief;
+        }
+
+        function capitalizeStrategy(strategy) {
+            const names = {
+                spike: 'Investigation First',
+                skeleton: 'Proof of Concept',
+                dependency: 'Foundation First',
+                risk: 'Highest Impact First',
+                value: 'Quick Win First',
+                rice: 'Impact Scoring'
+            };
+            return names[strategy] || strategy;
+        }
+
+        function getStrategyDescription(strategy) {
+            const descriptions = {
+                spike: 'Time-boxed investigation to understand root cause and validate solution approach.',
+                skeleton: 'Test proposed fix in staging with realistic load before production deployment.',
+                dependency: 'Build observability, runbooks, and safety mechanisms before making changes.',
+                risk: 'Address highest-impact reliability issues first to stop error budget bleeding.',
+                value: 'Quick operational wins that reduce toil and prove value immediately.',
+                rice: 'Score and prioritize based on Reliability Impact, Toil Saved, Confidence, and Effort.'
+            };
+            return descriptions[strategy] || '';
+        }
+
+        function downloadBrief() {
+            const markdown = generateMarkdownBrief();
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${projectData.name.replace(/\s+/g, '-').toLowerCase()}-brief.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function generateMarkdownBrief() {
+            const date = new Date().toLocaleDateString();
+            const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
+            
+            return `# ${projectData.name}
+
+## Problem Statement
+${projectData.problem}
+
+## Success Criteria
+${projectData.success}
+
+## Stakeholders
+${projectData.stakeholders || 'Not specified'}
+
+## Constraints
+${projectData.constraints || 'None specified'}
+
+## Major Components (${projectData.decompositionType} decomposition)
+${componentsFormatted}
+
+## Starting Strategy: ${capitalizeStrategy(projectData.strategy)}
+${getStrategyDescription(projectData.strategy)}
+
+## Initial Tasks for ${projectData.components[0]}
+${projectData.tasks}
+
+## Next Actions
+- [ ] Review this brief with team and stakeholders
+- [ ] Set up task tracking system (Jira, GitHub, Trello)
+- [ ] Schedule project kickoff
+- [ ] Begin first ${projectData.strategy} task
+
+---
+*Generated: ${date}*
+`;
+        }
+
+        function resetWizard() {
+            if (confirm('Are you sure you want to start over? This will clear all your inputs.')) {
+                location.reload();
+            }
+        }
+
+        function showReference(topic) {
+            alert('Reference sections coming soon! For now, check out the markdown version for full details.');
+        }
+
+        // Smooth scroll and active nav highlighting (existing code)
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const sections = document.querySelectorAll('.section');
+        const backToTopButton = document.getElementById('backToTop');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -35% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        const content = document.querySelector('.content');
+        if (content) {
+            content.addEventListener('scroll', () => {
+                if (content.scrollTop > 500) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 500) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        if (backToTopButton) {
+            backToTopButton.addEventListener('click', () => {
+                if (content) {
+                    content.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        if (navLinks.length > 0) {
+            navLinks[0].classList.add('active');
+        }
+    </script>
+</body>
+</html>
