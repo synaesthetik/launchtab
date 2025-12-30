@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "LaunchTab",
+  "version": "1.0.0",
+  "description": "Launch your projects with clarity - a planning wizard with JIRA integration for your new tab",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.atlassian.net/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "launchtab@patrick.lewis",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "project-management-runbook.html"
+  },
+  "browser_url_overrides": {
+    "newtab": "project-management-runbook.html"
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  }
+}

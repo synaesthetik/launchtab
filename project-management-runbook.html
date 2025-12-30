@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRE Project Planning Runbook</title>
+    <title>LaunchTab - Project Planning</title>
     <style>
         * {
             margin: 0;
@@ -1626,9 +1626,13 @@
             const challengesList = projectData.challenges.map((c, i) => `<li>${c}</li>`).join('');
             
             const ticketsList = projectData.tickets.map((ticket, i) => `
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-tertiary); border-left: 3px solid var(--teal); border-radius: 0.25rem;">
+                <div class="ticket-card" id="ticket-${i}" style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-tertiary); border-left: 3px solid var(--teal); border-radius: 0.25rem; position: relative;">
                     <h4 style="margin-top: 0; color: var(--teal-light);">🎫 ${ticket.title || 'Untitled Ticket'}</h4>
-                    <p style="margin: 0; color: var(--text-secondary);">${ticket.description || 'No description provided'}</p>
+                    <p style="margin: 0.5rem 0 1rem 0; color: var(--text-secondary);">${ticket.description || 'No description provided'}</p>
+                    <button onclick="createTicketInJira(${i})" class="jira-create-btn" style="padding: 0.5rem 1rem; background: var(--teal); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;">
+                        Create in JIRA
+                    </button>
+                    <span id="status-${i}" style="margin-left: 0.5rem; font-size: 0.875rem;"></span>
                 </div>
             `).join('');
             
@@ -1652,6 +1656,11 @@
                 
                 <h4>Initial JIRA Tickets to Create</h4>
                 ${ticketsList}
+                
+                <button onclick="createAllTickets()" id="create-all-btn" style="margin: 1rem 0; padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;">
+                    🚀 Create All Tickets in JIRA
+                </button>
+                <div id="batch-status" style="margin: 1rem 0; font-size: 0.875rem;"></div>
                 
                 <div class="admonition">
                     <h4>📅 Next Actions</h4>
@@ -1694,6 +1703,90 @@
                 rice: 'Score and prioritize based on Reliability Impact, Toil Saved, Confidence, and Effort.'
             };
             return descriptions[strategy] || '';
+        }
+
+        async function createTicketInJira(index) {
+            const ticket = projectData.tickets[index];
+            const statusEl = document.getElementById(`status-${index}`);
+            const btnEl = document.querySelector(`#ticket-${index} .jira-create-btn`);
+            
+            if (!ticket.title) {
+                statusEl.textContent = '⚠️ Title required';
+                statusEl.style.color = 'var(--danger)';
+                return;
+            }
+            
+            statusEl.textContent = '⏳ Creating...';
+            statusEl.style.color = 'var(--text-secondary)';
+            btnEl.disabled = true;
+            btnEl.style.opacity = '0.5';
+            
+            try {
+                const result = await createJiraTicket(ticket.title, ticket.description);
+                const ticketUrl = `https://${result.domain}/browse/${result.key}`;
+                statusEl.innerHTML = `✅ <a href="${ticketUrl}" target="_blank" style="color: var(--teal); text-decoration: underline;">${result.key}</a>`;
+                btnEl.textContent = 'Created!';
+                btnEl.style.background = 'var(--success)';
+            } catch (error) {
+                console.error('Failed to create ticket:', error);
+                statusEl.textContent = `❌ ${error.message}`;
+                statusEl.style.color = 'var(--danger)';
+                btnEl.disabled = false;
+                btnEl.style.opacity = '1';
+            }
+        }
+        
+        async function createAllTickets() {
+            const btnEl = document.getElementById('create-all-btn');
+            const statusEl = document.getElementById('batch-status');
+            
+            if (projectData.tickets.length === 0) {
+                statusEl.textContent = '⚠️ No tickets to create';
+                statusEl.style.color = 'var(--danger)';
+                return;
+            }
+            
+            btnEl.disabled = true;
+            btnEl.style.opacity = '0.5';
+            statusEl.textContent = '⏳ Creating tickets...';
+            statusEl.style.color = 'var(--text-secondary)';
+            
+            try {
+                const results = await createMultipleJiraTickets(
+                    projectData.tickets,
+                    (current, total) => {
+                        statusEl.textContent = `⏳ Creating ${current} of ${total} tickets...`;
+                    }
+                );
+                
+                // Update individual ticket displays
+                results.forEach((result, index) => {
+                    if (result.success) {
+                        const ticketUrl = `https://${result.domain}/browse/${result.key}`;
+                        const statusSpan = document.getElementById(`status-${index}`);
+                        const btnElement = document.querySelector(`#ticket-${index} .jira-create-btn`);
+                        
+                        if (statusSpan && btnElement) {
+                            statusSpan.innerHTML = `✅ <a href="${ticketUrl}" target="_blank" style="color: var(--teal); text-decoration: underline;">${result.key}</a>`;
+                            btnElement.textContent = 'Created!';
+                            btnElement.style.background = 'var(--success)';
+                            btnElement.disabled = true;
+                        }
+                    }
+                });
+                
+                const successCount = results.filter(r => r.success).length;
+                statusEl.innerHTML = `✅ Created ${successCount} of ${projectData.tickets.length} tickets successfully!`;
+                statusEl.style.color = 'var(--success)';
+                btnEl.textContent = 'All Created!';
+                btnEl.style.background = 'var(--success)';
+            } catch (error) {
+                console.error('Failed to create tickets:', error);
+                statusEl.textContent = `❌ ${error.message}`;
+                statusEl.style.color = 'var(--danger)';
+                btnEl.disabled = false;
+                btnEl.style.opacity = '1';
+            }
         }
 
         function downloadBrief() {
@@ -1957,5 +2050,6 @@ ${ticketsFormatted}
         // Load priorities on page load
         loadPriorities();
     </script>
+    <script src="jira-api.js"></script>
 </body>
 </html>

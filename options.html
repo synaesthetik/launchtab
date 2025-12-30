@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaunchTab Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #a855f7;
+            --teal: #14b8a6;
+            --bg: #1a1a1a;
+            --bg-secondary: #252525;
+            --text: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --border: #404040;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .help-text a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            color: var(--teal);
+            display: block;
+        }
+
+        .status.error {
+            background: rgba(244, 114, 182, 0.1);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            color: #f472b6;
+            display: block;
+        }
+
+        .test-connection {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ JIRA Configuration</h1>
+        <p class="subtitle">Configure your JIRA credentials to create tickets directly from the planner.</p>
+
+        <form id="settingsForm">
+            <div class="form-group">
+                <label for="jiraDomain">JIRA Domain</label>
+                <input type="text" id="jiraDomain" placeholder="greenhouseio.atlassian.net" required>
+                <p class="help-text">Your Atlassian domain (without https://)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="jiraEmail">Email</label>
+                <input type="text" id="jiraEmail" placeholder="your.email@company.com" required>
+                <p class="help-text">Your Atlassian account email</p>
+            </div>
+
+            <div class="form-group">
+                <label for="jiraToken">API Token</label>
+                <input type="password" id="jiraToken" placeholder="••••••••••••••••" required>
+                <p class="help-text">
+                    Generate one at 
+                    <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Atlassian API Tokens</a>
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="jiraProject">Default Project Key</label>
+                <input type="text" id="jiraProject" placeholder="DS" required>
+                <p class="help-text">The project key where tickets will be created (e.g., DS, ENG, OPS)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="jiraIssueType">Default Issue Type</label>
+                <input type="text" id="jiraIssueType" placeholder="Task" value="Task">
+                <p class="help-text">Task, Story, Bug, etc.</p>
+            </div>
+
+            <button type="submit" class="btn">Save Settings</button>
+            
+            <div id="status" class="status"></div>
+        </form>
+
+        <div class="test-connection">
+            <h3>Test Connection</h3>
+            <button type="button" class="btn" id="testBtn" style="margin-top: 1rem;">Test JIRA Connection</button>
+            <div id="testStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

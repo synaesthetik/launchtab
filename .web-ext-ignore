@@ -1,0 +1,10 @@
+# Exclude these files from web-ext build
+*.md
+*.sh
+*.git
+.github/
+.gitignore
+package.sh
+CI_CD_SETUP.md
+SUBMISSION_GUIDE.md
+PROJECT_MANAGEMENT_RUNBOOK.md

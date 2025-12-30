@@ -1,0 +1,30 @@
+name: Validate Extension
+
+on:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install web-ext
+        run: npm install -g web-ext
+      
+      - name: Lint extension
+        run: web-ext lint
+      
+      - name: Build extension
+        run: web-ext build --overwrite-dest
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-extension
+          path: web-ext-artifacts/*.zip
