@@ -11,9 +11,9 @@
    - `icon128.png`
 
 ### 2. Create ZIP Package
-Run this command from the `pm-guidebook` directory:
+Run this command from the `launchtab` directory:
 ```bash
-zip -r pm-guidebook.zip \
+zip -r launchtab.zip \
   manifest.json \
   project-management-runbook.html \
   options.html \
@@ -42,9 +42,9 @@ chmod +x package.sh
 ### 2. Submit Extension
 1. Visit https://addons.mozilla.org/developers/addon/submit/distribution
 2. Choose "On your own" (self-distributed, not listed publicly)
-3. Upload `pm-guidebook.zip`
+3. Upload `launchtab.zip`
 4. Fill in the required information:
-   - **Name**: PM Guidebook
+   - **Name**: LaunchTab
    - **Summary**: Project planning wizard with JIRA integration for your new tab
    - **Description**: Interactive stream-of-consciousness project planning tool that helps break down complex projects and create JIRA tickets directly from your browser.
    - **Categories**: Productivity, Developer Tools
