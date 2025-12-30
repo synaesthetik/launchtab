@@ -70,12 +70,8 @@
         .sidebar h1 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text);
             font-weight: 700;
-            text-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
         }
 
         .sidebar .subtitle {
@@ -141,10 +137,7 @@
         .content h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            background: var(--gradient-secondary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text);
             font-weight: 800;
         }
 
@@ -648,8 +641,6 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <h1>SRE Runbook</h1>
-            <p class="subtitle">Break down reliability work, reduce toil</p>
             
             <nav>
                 <div class="nav-section">
@@ -662,9 +653,14 @@
                 <div class="nav-section">
                     <div class="nav-section-title">Resources</div>
                     <ul class="nav-links">
-                        <li><a href="#" onclick="showReference('principles'); return false;">📖 Principles</a></li>
-                        <li><a href="#" onclick="showReference('methodologies'); return false;">🛠️ Methodologies</a></li>
-                        <li><a href="#" onclick="showReference('pitfalls'); return false;">⚠️ Pitfalls</a></li>
+                        <li><a href="https://sre.google/books/" target="_blank">📚 Google SRE Books</a></li>
+                        <li><a href="https://basecamp.com/shapeup" target="_blank">⚙️ Shape Up (Basecamp)</a></li>
+                        <li><a href="https://staffeng.com/guides/work-on-what-matters" target="_blank">🎯 Work on What Matters</a></li>
+                        <li><a href="https://martinfowler.com/articles/break-monolith-into-microservices.html" target="_blank">🔨 Breaking Down Systems</a></li>
+                        <li><a href="https://www.atlassian.com/agile/project-management/epics-stories-themes" target="_blank">📊 Stories & Epics Guide</a></li>
+                        <li><a href="https://dora.dev/" target="_blank">📈 DORA Metrics</a></li>
+                        <li><a href="https://blog.pragmaticengineer.com/project-management-at-big-tech/" target="_blank">💼 PM at Big Tech</a></li>
+                        <li><a href="https://www.amazon.com/Working-Backwards-Insights-Stories-Secrets/dp/1250267595" target="_blank">↩️ Working Backwards</a></li>
                     </ul>
                 </div>
             </nav>
@@ -672,8 +668,6 @@
 
         <!-- Main Content -->
         <main class="content">
-            <h1>SRE Project Planner</h1>
-            <p>Break down reliability work into actionable tasks.</p>
 
             <div class="flow-container">
                 <!-- Step 0: Problem Understanding Check -->
@@ -702,17 +696,16 @@
                                 <li>Search <a href="https://app.glean.com/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Glean</a> for your problem statement or related keywords.</li>
                                 <li>Check <a href="https://docs.google.com/spreadsheets/d/1aWvoA2zZGciXpx-RXea7SgExId5GDn21P2Bfk1DRTrU/edit?gid=2108134656#gid=2108134656" target="_blank" style="color: var(--teal-light); text-decoration: underline;">R&D Team Ownership</a> to identify who you should involve.</li>
                                 <li>Identify and take note of relevant code in <a href="https://github.com/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Github</a>.</li>
-                                <li>Search <a href="https://www.notion.so/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">Notion</a> that relate to your issue.</li>
+                                <li>If you don't have a rough tracking spreadsheet, <a href="https://docs.google.com/spreadsheets/u/0/" target="_blank" style="color: var(--teal-light); text-decoration: underline;">start one now</a>.</li>
                             </ul>
                         </div>
                         <div class="admonition" style="border-left-color: var(--primary);">
-                            <h4>🤖 Ask AI things like:</h4>
-                            <p style="margin-bottom: 0.5rem;">Try asking GitHub Copilot questions like:</p>
+                            <h4>🤖 AI Time</h4>
+                            <p style="margin-bottom: 0.5rem;">Once you have gathered some context, try prompts like:</p>
                             <ul style="margin-left: 1.5rem;">
-                                <li>"Search our codebase for recent changes related to [your problem area] and summarize what you find"</li>
-                                <li>"Find similar issues or incidents in our documentation and explain how they were resolved"</li>
-                                <li>"Analyze the code in [repository/file] and explain how [system/feature] works"</li>
-                                <li>"Search Glean for information about [problem domain] and summarize the key teams and systems involved"</li>
+                                <li><strong>Copilot</strong> "Explain how [system/service] works. If possible, include: architecture diagram or description, key dependencies, data flow, failure modes, and monitoring/alerting setup."</li>
+                                <li><strong>Glean</strong> "Who owns [system/problem area]? Tell me: the team name, their Slack channel, key engineers, on-call rotation if any, and related runbooks or documentation."</li>
+                                <li><strong>Copilot</strong> "Search this codebase for: what changes were made involving [problem area] in the last year, why they were made, what problems they solved, and what new issues emerged."</li>
                             </ul>
                         </div>
                         <p style="margin-top: 1rem; color: var(--text-secondary);"><em>Once you have the information, come back and restart the wizard.</em></p>
@@ -720,9 +713,8 @@
                     </div>
                     <div class="reveal" id="proceedToStep1">
                         <div class="info-box success">
-                            <p>Great! Let's document what you know.</p>
+                            <p>Great! Let's get started.</p>
                         </div>
-                        <button class="btn" onclick="proceedFromUnderstanding()">Continue →</button>
                     </div>
                 </div>
 
@@ -1084,6 +1076,10 @@ Rollback plan"></textarea>
             if (answer === 'yes') {
                 needInfoPath.classList.remove('open');
                 proceedPath.classList.add('open');
+                // Auto-proceed after a brief moment to show the success message
+                setTimeout(() => {
+                    proceedFromUnderstanding();
+                }, 800);
             } else {
                 proceedPath.classList.remove('open');
                 needInfoPath.classList.add('open');
@@ -1464,13 +1460,19 @@ ${projectData.tasks}
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
+                const href = link.getAttribute('href');
                 
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Only prevent default for internal anchor links
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 }
+                // External links (http/https) will work normally
             });
         });
 
