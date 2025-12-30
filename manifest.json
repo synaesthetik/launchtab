@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "PM Guidebook",
+  "name": "LaunchTab",
   "version": "1.0.0",
-  "description": "Project planning wizard with JIRA integration for your new tab",
+  "description": "Launch your projects with clarity - a planning wizard with JIRA integration for your new tab",
   "permissions": [
     "storage",
     "tabs"
@@ -12,7 +12,7 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "pm-guidebook@patrick.lewis",
+      "id": "launchtab@patrick.lewis",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": ["none"]
