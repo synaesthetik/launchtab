@@ -1,0 +1,7 @@
+# Build artifacts
+launchtab.zip
+*.xpi
+web-ext-artifacts/
+
+# macOS
+.DS_Store
