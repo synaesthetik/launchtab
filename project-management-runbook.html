@@ -1202,31 +1202,23 @@
                         <p>What does your intuition tell you? What approach feels right?</p>
                     </div>
 
-                    <h3>Think about it this way:</h3>
+                    <h3>Choose your starting approach:</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Research-backed strategies that actually work:</p>
                     <div class="options-grid">
                         <div class="option-card" onclick="selectStrategy('spike')">
-                            <h4>🔬 I need to understand it first</h4>
-                            <p>Not sure what's actually causing this</p>
+                            <h4>🔬 Spike: Reduce Uncertainty</h4>
+                            <p>Time-boxed investigation when unknowns are blocking progress</p>
+                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">XP Practice • Prevents wasted effort on wrong solutions</small>
                         </div>
                         <div class="option-card" onclick="selectStrategy('skeleton')">
-                            <h4>🦴 I need to prove it works</h4>
-                            <p>Want to test the approach first</p>
-                        </div>
-                        <div class="option-card" onclick="selectStrategy('dependency')">
-                            <h4>🔗 I need the basics first</h4>
-                            <p>Can't do much without monitoring/tooling</p>
+                            <h4>🦴 Walking Skeleton: Prove It Early</h4>
+                            <p>Build end-to-end first, then add features</p>
+                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">Cockburn's "Growing Object-Oriented Software" • De-risks architecture</small>
                         </div>
                         <div class="option-card" onclick="selectStrategy('risk')">
-                            <h4>⚠️ The biggest pain point</h4>
-                            <p>This one thing is causing the most damage</p>
-                        </div>
-                        <div class="option-card" onclick="selectStrategy('value')">
-                            <h4>💎 The easiest win</h4>
-                            <p>Get something done fast for morale</p>
-                        </div>
-                        <div class="option-card" onclick="selectStrategy('rice')">
-                            <h4>📊 Let me think through it</h4>
-                            <p>Want to score and compare options</p>
+                            <h4>⚠️ Risk-First: Attack Uncertainty</h4>
+                            <p>Tackle the scariest/most uncertain part first</p>
+                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">Gilb's Risk-Driven Development • Fail fast or build confidence</small>
                         </div>
                     </div>
 
@@ -1360,9 +1352,10 @@
     <!-- Back to Top Button -->
     <div class="back-to-top" id="backToTop" title="Back to top">↑</div>
 
-    <script>
-        // State management
-        const projectData = {
+    <script src="main.js"></script>
+    <script src="jira-api.js"></script>
+</body>
+</html>
             problem: '',
             success: '',
             challenges: [],
