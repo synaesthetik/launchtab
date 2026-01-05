@@ -8,8 +8,7 @@
     "tabs"
   ],
   "host_permissions": [
-    "https://*.atlassian.net/*",
-    "https://greenhouseio.atlassian.net/*"
+    "*://*.atlassian.net/*"
   ],
   "browser_specific_settings": {
     "gecko": {
