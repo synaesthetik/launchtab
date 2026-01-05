@@ -19,7 +19,7 @@ A browser extension that helps you plan projects and create JIRA tickets directl
 
 1. Open Firefox and go to `about:debugging#/runtime/this-firefox`
 2. Click "Load Temporary Add-on"
-3. Navigate to the `pm-guidebook` folder and select `manifest.json`
+3. Navigate to the root of this repo and select `manifest.json`
 4. The extension will be loaded temporarily (until Firefox restarts)
 
 ## Configuration
