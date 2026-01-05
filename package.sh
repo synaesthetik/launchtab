@@ -26,6 +26,7 @@ rm -f launchtab.zip
 zip -r launchtab.zip \
   manifest.json \
   project-management-runbook.html \
+  main.js \
   options.html \
   options.js \
   popup.html \
