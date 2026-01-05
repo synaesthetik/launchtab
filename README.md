@@ -13,16 +13,9 @@ A browser extension that helps you plan projects and create JIRA tickets directl
 - ✅ Daily priorities tracker
 
 ## Installation
+[Pick a version to install here](https://addons.mozilla.org/en-US/developers/addon/df93f9d509504555a47e/versions)
 
-### Chrome/Edge
-
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode" (toggle in top right)
-3. Click "Load unpacked"
-4. Select the `launchtab` folder
-5. The extension will appear in your extensions list
-
-### Firefox
+## Installation for debugging
 
 1. Open Firefox and go to `about:debugging#/runtime/this-firefox`
 2. Click "Load Temporary Add-on"
