@@ -387,13 +387,6 @@ function generateFinalBrief() {
         pDesc.textContent = ticket.description || 'No description provided';
         ticketCard.appendChild(pDesc);
         
-        const createBtn = document.createElement('button');
-        createBtn.className = 'jira-create-btn';
-        createBtn.style.cssText = 'padding: 0.5rem 1rem; background: var(--teal); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;';
-        createBtn.textContent = 'Create in JIRA';
-        createBtn.onclick = () => createTicketInJira(i);
-        ticketCard.appendChild(createBtn);
-        
         const statusSpan = document.createElement('span');
         statusSpan.id = `status-${i}`;
         statusSpan.style.cssText = 'margin-left: 0.5rem; font-size: 0.875rem;';
@@ -406,7 +399,7 @@ function generateFinalBrief() {
     const createAllBtn = document.createElement('button');
     createAllBtn.id = 'create-all-btn';
     createAllBtn.style.cssText = 'margin: 1rem 0; padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;';
-    createAllBtn.textContent = '🚀 Create All Tickets in JIRA';
+    createAllBtn.textContent = '🚀 Create in JIRA';
     createAllBtn.onclick = createAllTickets;
     finalBriefEl.appendChild(createAllBtn);
     
