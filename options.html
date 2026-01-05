@@ -118,6 +118,13 @@
             display: none;
         }
 
+        .status.info {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: var(--primary);
+            display: block;
+        }
+
         .status.success {
             background: rgba(20, 184, 166, 0.1);
             border: 1px solid rgba(20, 184, 166, 0.3);
@@ -167,15 +174,15 @@
             </div>
 
             <div class="form-group">
-                <label for="jiraProject">Default Project Key</label>
-                <input type="text" id="jiraProject" placeholder="DS" required>
-                <p class="help-text">The project key where tickets will be created (e.g., DS, ENG, OPS)</p>
+                <label for="jiraProject">Default Project ID</label>
+                <input type="text" id="jiraProject" placeholder="11200" required>
+                <p class="help-text">The numeric project ID (find it in the URL when creating an issue: pid=11200)</p>
             </div>
 
             <div class="form-group">
-                <label for="jiraIssueType">Default Issue Type</label>
-                <input type="text" id="jiraIssueType" placeholder="Task" value="Task">
-                <p class="help-text">Task, Story, Bug, etc.</p>
+                <label for="jiraIssueType">Default Issue Type ID</label>
+                <input type="text" id="jiraIssueType" placeholder="3">
+                <p class="help-text">The numeric issue type ID (e.g., 3 for Task, 10001 for Story)</p>
             </div>
 
             <button type="submit" class="btn">Save Settings</button>

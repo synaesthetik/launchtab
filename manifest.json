@@ -1,18 +1,19 @@
 {
   "manifest_version": 3,
   "name": "LaunchTab",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "description": "Launch your projects with clarity - a planning wizard with JIRA integration for your new tab",
   "permissions": [
     "storage",
     "tabs"
   ],
   "host_permissions": [
-    "https://*.atlassian.net/*"
+    "https://*.atlassian.net/*",
+    "https://greenhouseio.atlassian.net/*"
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "launchtab@patrick.lewis",
+      "id": "pm-guidebook@patrick.lewis",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": ["none"]
