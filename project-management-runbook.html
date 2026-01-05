@@ -995,6 +995,17 @@
                 <a href="https://greenhouseio.atlassian.net/jira/software/c/projects/DS/boards/248?assignee=5dadb08fbb59d80d88eadaa0" target="_blank" class="work-link">Assigned JIRA Tickets</a>
                 <a href="https://app.slack.com/client/T012ABCDEF/C34XYZ789" target="_blank" class="work-link">Slack Unreads</a>
             </div>
+            
+            <div class="priorities-section">
+                <h4>🎫 Quick Create Ticket</h4>
+                <form class="priorities-form" id="quickTicketForm">
+                    <input type="text" class="priority-input" id="quickTicketTitle" placeholder="Ticket title..." maxlength="200" required>
+                    <textarea class="priority-input" id="quickTicketDesc" placeholder="Description (optional)..." rows="3" style="resize: vertical; min-height: 60px;"></textarea>
+                    <button type="submit" class="pin-btn">Create in JIRA</button>
+                    <div id="quickTicketStatus" style="margin-top: 0.5rem; font-size: 0.875rem; text-align: center;"></div>
+                </form>
+            </div>
+            
             <div class="priorities-section">
                 <h4>Today's 3 Priorities</h4>
                 <form class="priorities-form" id="prioritiesForm">
@@ -1060,8 +1071,8 @@
                     <div class="input-group">
                         <label style="font-size: 1.125rem; margin-bottom: 1rem;">Do you understand the problem you're trying to solve?</label>
                         <div style="display: flex; gap: 1rem;">
-                            <button class="btn" style="flex: 1;" onclick="answerUnderstanding('yes')">✓ Yes</button>
-                            <button class="btn btn-secondary" style="flex: 1;" onclick="answerUnderstanding('no')">✗ No</button>
+                            <button class="btn" style="flex: 1;" data-action="understand-yes">✓ Yes</button>
+                            <button class="btn btn-secondary" style="flex: 1;" data-action="understand-no">✗ No</button>
                         </div>
                     </div>
                     <div class="reveal" id="needInfoPath">
@@ -1087,7 +1098,7 @@
                             </ul>
                         </div>
                         <p style="margin-top: 1rem; color: var(--text-secondary);"><em>Once you have the information, come back and restart the wizard.</em></p>
-                        <button class="btn" onclick="resetWizard()">↻ Start Over with New Info</button>
+                        <button class="btn" data-action="reset-wizard">↻ Start Over with New Info</button>
                     </div>
                     <div class="reveal" id="proceedToStep1">
                         <div class="info-box success">
@@ -1115,7 +1126,7 @@
                         <label for="successCriteria">What would 'fixed' look like?</label>
                         <textarea id="successCriteria" placeholder="Stream of consciousness about what you want... 'I wouldn't have to...', 'The system would automatically...', 'We'd see...', 'The team could finally...'"></textarea>
                     </div>
-                    <button class="btn" onclick="completeStep(1)">Next →</button>
+                    <button class="btn" data-action="complete-step" data-step="1">Next →</button>
                 </div>
 
                 <div class="flow-arrow">↓</div>
@@ -1147,7 +1158,7 @@
                         <input type="text" id="challenge3" placeholder="Third major challenge...">
                     </div>
 
-                    <button class="btn" onclick="completeStep(2)">Next →</button>
+                    <button class="btn" data-action="complete-step" data-step="2">Next →</button>
                 </div>
 
                 <div class="flow-arrow">↓</div>
@@ -1164,15 +1175,15 @@
                     </div>
 
                     <div class="options-grid">
-                        <div class="option-card" onclick="selectDecomposition('infrastructure')">
+                        <div class="option-card" data-action="select-decomposition" data-value="infrastructure">
                             <h4>🏗️ By System</h4>
                             <p>What systems/services are involved?</p>
                         </div>
-                        <div class="option-card" onclick="selectDecomposition('tasks')">
+                        <div class="option-card" data-action="select-decomposition" data-value="tasks">
                             <h4>🎯 By Action</h4>
                             <p>What needs to happen?</p>
                         </div>
-                        <div class="option-card" onclick="selectDecomposition('workflow')">
+                        <div class="option-card" data-action="select-decomposition" data-value="workflow">
                             <h4>🔄 By Flow</h4>
                             <p>What's the journey or process?</p>
                         </div>
@@ -1183,7 +1194,7 @@
                             <label>List the initial "big rocks", 1 per line (don't overthink it):</label>
                             <textarea id="components" rows="6" placeholder="Just list things out... systems, tasks, areas, whatever makes sense to you. One per line. Don't worry about perfect organization."></textarea>
                         </div>
-                        <button class="btn" onclick="completeStep(3)">Next →</button>
+                        <button class="btn" data-action="complete-step" data-step="3">Next →</button>
                     </div>
                 </div>
 
@@ -1202,29 +1213,25 @@
                         <p>What does your intuition tell you? What approach feels right?</p>
                     </div>
 
-                    <h3>Choose your starting approach:</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Research-backed strategies that actually work:</p>
+                    <h3>Choose your approach:</h3>
                     <div class="options-grid">
-                        <div class="option-card" onclick="selectStrategy('spike')">
-                            <h4>🔬 Spike: Reduce Uncertainty</h4>
-                            <p>Time-boxed investigation when unknowns are blocking progress</p>
-                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">XP Practice • Prevents wasted effort on wrong solutions</small>
+                        <div class="option-card" data-action="select-strategy" data-value="skeleton">
+                            <h4>🦴 Walking Skeleton</h4>
+                            <p>Prove the architecture works end-to-end</p>
                         </div>
-                        <div class="option-card" onclick="selectStrategy('skeleton')">
-                            <h4>🦴 Walking Skeleton: Prove It Early</h4>
-                            <p>Build end-to-end first, then add features</p>
-                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">Cockburn's "Growing Object-Oriented Software" • De-risks architecture</small>
+                        <div class="option-card" data-action="select-strategy" data-value="risk">
+                            <h4>⚠️ Risk-First</h4>
+                            <p>Tackle the biggest uncertainty early</p>
                         </div>
-                        <div class="option-card" onclick="selectStrategy('risk')">
-                            <h4>⚠️ Risk-First: Attack Uncertainty</h4>
-                            <p>Tackle the scariest/most uncertain part first</p>
-                            <small style="color: var(--text-secondary); font-size: 0.85rem; display: block; margin-top: 0.5rem;">Gilb's Risk-Driven Development • Fail fast or build confidence</small>
+                        <div class="option-card" data-action="select-strategy" data-value="value">
+                            <h4>💎 Value-First</h4>
+                            <p>Deliver user value quickly</p>
                         </div>
                     </div>
 
                     <div class="reveal" id="strategyGuidance"></div>
 
-                    <button class="btn btn-secondary" onclick="completeStep(4)">Next →</button>
+                    <button class="btn btn-secondary" data-action="complete-step" data-step="4">Next →</button>
                 </div>
 
                 <div class="flow-arrow">↓</div>
@@ -1244,8 +1251,8 @@
                         <!-- Tickets will be added here dynamically -->
                     </div>
 
-                    <button class="btn" onclick="addTicketForm()" style="margin-bottom: 1rem;">+ Add Ticket</button>
-                    <button class="btn btn-secondary" onclick="completeStep(5)">Generate Brief →</button>
+                    <button class="btn" data-action="add-ticket" style="margin-bottom: 1rem;">+ Add Ticket</button>
+                    <button class="btn btn-secondary" data-action="complete-step" data-step="5">Generate Brief →</button>
                 </div>
 
                 <div class="flow-arrow">↓</div>
@@ -1262,70 +1269,20 @@
                     </div>
 
                     <div class="output-box" id="finalBrief">
-                        <!0;
-
-        // Understanding check functions
-        function answerUnderstanding(answer) {
-            const needInfoPath = document.getElementById('needInfoPath');
-            const proceedPath = document.getElementById('proceedToStep1');
-            
-            if (answer === 'yes') {
-                needInfoPath.classList.remove('open');
-                proceedPath.classList.add('open');
-            } else {
-                proceedPath.classList.remove('open');
-                needInfoPath.classList.add('open');
-                // Reset nested paths
-                document.getElementById('needPersonPath').classList.remove('open');
-                document.getElementById('resourcesPath').classList.remove('open');
-            }
-        }
-
-        function answerKnowWhere(answer) {
-            if (answer === 'yes') {
-                document.getElementById('needPersonPath').classList.remove('open');
-                alert('Great! Gather that information and come back when ready.');
-            } else {
-                document.getElementById('needPersonPath').classList.add('open');
-            }
-        }
-
-        function answerKnowPerson(answer) {
-            if (answer === 'yes') {
-                document.getElementById('resourcesPath').classList.remove('open');
-                alert('Perfect! Reach out to them and return when you have the details.');
-            } else {
-                document.getElementById('resourcesPath').classList.add('open');
-            }
-        }
-
-        function proceedFromUnderstanding() {
-            document.getElementById('step0').classList.remove('active');
-            document.getElementById('step0').classList.add('completed');
-            document.getElementById('step1').classList.add('active');
-            document.getElementById('step1').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-            currentStep = 1;
-        } Will be populated by JavaScript -->
+                        <!-- Will be populated by JavaScript -->
                     </div>
 
                     <div class="admonition tip">
-                        <h4>What to do with this:</h4>
+                        <h4>Next Steps:</h4>
                         <ul class="checklist">
-                            <li>Copy this and clean it up with AI</li>
-                            <li>Talk it through with someone</li>
-                            <li>Turn it into actual tickets</li>
-                            <li>Start the first task</li>
-                            <li>Update as you learn more</li>
-                    // Show components again in confidence check
-                    displayComponentsSummaryCheck();
+                            <li><strong>Start the conversation:</strong> Set a meeting with stakeholders to review this brief, shape out the work, and identify any gaps or concerns.</li>
+                            <li><strong>Refine with AI:</strong> Paste this brief into an AI chat with: <em>"I'd like you to refine this document to ensure it is as readable and easily digestible as possible to stakeholders, who are highly discerning, technical people."</em></li>
+                            <li><strong>Create tickets & track progress:</strong> Use the tickets above as a starting point. Update them as you learn more and the plan evolves.</li>
                         </ul>
                     </div>
 
-                    <button class="btn" onclick="downloadBrief()">📥 Download</button>
-                    <button class="btn btn-secondary" onclick="resetWizard()">↻ Reset</button>
+                    <button class="btn" data-action="download-brief">📥 Download</button>
+                    <button class="btn btn-secondary" data-action="reset-wizard">↻ Reset</button>
                 </div>
 
                 <!-- Reference Section -->
@@ -1337,10 +1294,10 @@
                         <div style="margin-top: 1rem;">
                             <p style="color: var(--text-secondary);">For detailed methodologies, frameworks, and best practices, see the complete sections below:</p>
                             <ul style="color: var(--text-secondary);">
-                                <li><a href="#" onclick="showReference('principles')" style="color: var(--teal-light);">Core Principles</a></li>
-                                <li><a href="#" onclick="showReference('methodologies')" style="color: var(--teal-light);">Methodologies & Frameworks</a></li>
-                                <li><a href="#" onclick="showReference('pitfalls')" style="color: var(--teal-light);">Common Pitfalls to Avoid</a></li>
-                                <li><a href="#" onclick="showReference('metrics')" style="color: var(--teal-light);">Progress Tracking & Metrics</a></li>
+                                <li><a href="#" data-action="show-reference" data-value="principles" style="color: var(--teal-light);">Core Principles</a></li>
+                                <li><a href="#" data-action="show-reference" data-value="methodologies" style="color: var(--teal-light);">Methodologies & Frameworks</a></li>
+                                <li><a href="#" data-action="show-reference" data-value="pitfalls" style="color: var(--teal-light);">Common Pitfalls to Avoid</a></li>
+                                <li><a href="#" data-action="show-reference" data-value="metrics" style="color: var(--teal-light);">Progress Tracking & Metrics</a></li>
                             </ul>
                         </div>
                     </details>
@@ -1352,697 +1309,7 @@
     <!-- Back to Top Button -->
     <div class="back-to-top" id="backToTop" title="Back to top">↑</div>
 
-    <script src="main.js"></script>
-    <script src="jira-api.js"></script>
-</body>
-</html>
-            problem: '',
-            success: '',
-            challenges: [],
-            decompositionType: '',
-            components: [],
-            strategy: '',
-            tickets: []
-        };
-
-        let currentStep = 0;
-        let ticketCounter = 0;
-
-        // Ticket management functions
-        function addTicketForm() {
-            ticketCounter++;
-            const container = document.getElementById('ticketsContainer');
-            const ticketCard = document.createElement('div');
-            ticketCard.className = 'ticket-card';
-            ticketCard.id = `ticket-${ticketCounter}`;
-            ticketCard.innerHTML = `
-                <button class="remove-ticket" onclick="removeTicket(${ticketCounter})" title="Remove ticket">×</button>
-                <span class="ticket-number">Ticket #${ticketCounter}</span>
-                <div class="input-group">
-                    <label for="ticket-title-${ticketCounter}">Title:</label>
-                    <input type="text" id="ticket-title-${ticketCounter}" placeholder="Brief, action-oriented title...">
-                </div>
-                <div class="input-group">
-                    <label for="ticket-desc-${ticketCounter}">Description:</label>
-                    <textarea id="ticket-desc-${ticketCounter}" rows="4" placeholder="What needs to be done, why, and any relevant context..."></textarea>
-                </div>
-            `;
-            container.appendChild(ticketCard);
-        }
-
-        function removeTicket(ticketId) {
-            const ticket = document.getElementById(`ticket-${ticketId}`);
-            if (ticket) {
-                ticket.remove();
-            }
-        }
-
-        function collectTickets() {
-            const tickets = [];
-            const ticketCards = document.querySelectorAll('.ticket-card');
-            ticketCards.forEach(card => {
-                const ticketId = card.id.split('-')[1];
-                const title = document.getElementById(`ticket-title-${ticketId}`).value.trim();
-                const description = document.getElementById(`ticket-desc-${ticketId}`).value.trim();
-                if (title || description) {
-                    tickets.push({ title, description });
-                }
-            });
-            return tickets;
-        }
-
-        // Understanding check functions
-        function answerUnderstanding(answer) {
-            const needInfoPath = document.getElementById('needInfoPath');
-            const proceedPath = document.getElementById('proceedToStep1');
-            
-            if (answer === 'yes') {
-                needInfoPath.classList.remove('open');
-                proceedPath.classList.add('open');
-                // Auto-proceed after a brief moment to show the success message
-                setTimeout(() => {
-                    proceedFromUnderstanding();
-                }, 800);
-            } else {
-                proceedPath.classList.remove('open');
-                needInfoPath.classList.add('open');
-            }
-        }
-
-        function proceedFromUnderstanding() {
-            document.getElementById('step0').classList.remove('active');
-            document.getElementById('step0').classList.add('completed');
-            document.getElementById('step1').classList.add('active');
-            document.getElementById('step1').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-            currentStep = 1;
-        }
-
-        // Step management
-        function completeStep(stepNum) {
-            // Collect data from current step
-            switch(stepNum) {
-                case 1:
-                    projectData.problem = document.getElementById('problemStatement').value;
-                    projectData.success = document.getElementById('successCriteria').value;
-                    if (!projectData.problem || !projectData.success) {
-                        alert('Please fill in both fields before continuing.');
-                        return;
-                    }
-                    displayProblemSummary();
-                    break;
-                case 2:
-                    projectData.challenges = [
-                        document.getElementById('challenge1').value.trim(),
-                        document.getElementById('challenge2').value.trim(),
-                        document.getElementById('challenge3').value.trim()
-                    ].filter(c => c); // Remove empty challenges
-                    if (projectData.challenges.length === 0) {
-                        alert('Please list at least one challenge.');
-                        return;
-                    }
-                    break;
-                case 3:
-                    const componentsText = document.getElementById('components').value;
-                    projectData.components = componentsText.split('\n').filter(c => c.trim());
-                    if (projectData.components.length < 2) {
-                        alert('Please list at least 2 components.');
-                        return;
-                    }
-                    displayComponentsSummary();
-                    break;
-                case 4:
-                    if (!projectData.strategy) {
-                        alert('Please select a starting strategy.');
-                        return;
-                    }
-                    break;
-                case 5:
-                    projectData.tickets = collectTickets();
-                    if (projectData.tickets.length === 0) {
-                        alert('Please add at least one ticket.');
-                        return;
-                    }
-                    generateFinalBrief();
-                    break;
-            }
-
-            // Mark current step as completed
-            document.getElementById('step' + stepNum).classList.remove('active');
-            document.getElementById('step' + stepNum).classList.add('completed');
-
-            // Activate next step
-            const nextStepId = 'step' + (stepNum + 1);
-            
-            if (document.getElementById(nextStepId)) {
-                document.getElementById(nextStepId).classList.add('active');
-                document.getElementById(nextStepId).scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-                currentStep = stepNum + 1;
-            }
-        }
-
-        function displayProblemSummary() {
-            const summary = `
-                <h4>📋 Your Problem Statement</h4>
-                <p><strong>Problem:</strong> ${projectData.problem}</p>
-                <p><strong>Success Looks Like:</strong> ${projectData.success}</p>
-            `;
-            document.getElementById('problemSummary').innerHTML = summary;
-        }
-
-        function displayComponentsSummary() {
-            const componentsList = projectData.components.map(c => `<li>${c}</li>`).join('');
-            const summary = `
-                <h4>🏗️ Your Major Components (${projectData.decompositionType} approach)</h4>
-                <ul>${componentsList}</ul>
-            `;
-            document.getElementById('componentsSummary').innerHTML = summary;
-        }
-
-        function selectDecomposition(type) {
-            projectData.decompositionType = type;
-            
-            // Visual feedback
-            document.querySelectorAll('#step3 .option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            event.target.closest('.option-card').classList.add('selected');
-
-            // Show component input
-            document.getElementById('componentInput').classList.add('open');
-        }
-
-        function selectStrategy(strategy) {
-            projectData.strategy = strategy;
-            
-            // Visual feedback
-            document.querySelectorAll('#step4 .option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            event.target.closest('.option-card').classList.add('selected');
-
-            // Show guidance
-            const guidance = getStrategyGuidance(strategy);
-            const guidanceEl = document.getElementById('strategyGuidance');
-            guidanceEl.innerHTML = guidance;
-            guidanceEl.classList.add('open');
-        }
-
-        function getStrategyGuidance(strategy) {
-            const guides = {
-                spike: `
-                    <div class="admonition tip">
-                        <h4>🔬 Spike Approach Selected</h4>
-                        <p><strong>First task:</strong> Time-box 2-4 hours of research to answer key unknowns.</p>
-                        <p><strong>Deliverable:</strong> Document with findings and recommended approach.</p>
-                        <p><strong>Example:</strong> "Research feasibility of integrating Zendesk API - 3 hours"</p>
-                    </div>
-                `,
-                skeleton: `
-                    <div class="admonition tip">
-                        <h4>🦴 Walking Skeleton Approach Selected</h4>
-                        <p><strong>First task:</strong> Build the simplest end-to-end flow possible.</p>
-                        <p><strong>Goal:</strong> Prove the architecture works before building features.</p>
-                        <p><strong>Example:</strong> "Create minimal dashboard that displays one hardcoded ticket"</p>
-                    </div>
-                `,
-                dependency: `
-                    <div class="admonition tip">
-                        <h4>🔗 Dependency-First Approach Selected</h4>
-                        <p><strong>First task:</strong> Build foundations that other work depends on.</p>
-                        <p><strong>Examples:</strong> Authentication, API client, data models, CI/CD pipeline</p>
-                        <p><strong>Benefit:</strong> Unblocks parallel work streams</p>
-                    </div>
-                `,
-                risk: `
-                    <div class="admonition tip">
-                        <h4>⚠️ Risk-First Approach Selected</h4>
-                        <p><strong>First task:</strong> Tackle the scariest/most uncertain component.</p>
-                        <p><strong>Why:</strong> Fail fast or build confidence early.</p>
-                        <p><strong>Example:</strong> "Prototype real-time sync between Zendesk and Jira"</p>
-                    </div>
-                `,
-                value: `
-                    <div class="admonition tip">
-                        <h4>💎 Value-First Approach Selected</h4>
-                        <p><strong>First task:</strong> Build what delivers immediate user value.</p>
-                        <p><strong>Benefit:</strong> Quick wins, early feedback, stakeholder confidence.</p>
-                        <p><strong>Example:</strong> "Basic ticket list view with manual refresh"</p>
-                    </div>
-                `,
-                rice: `
-                    <div class="admonition tip">
-                        <h4>📊 RICE Prioritization Selected</h4>
-                        <p><strong>Next step:</strong> Score each component using RICE:</p>
-                        <p><strong>Formula:</strong> (Reach × Impact × Confidence) / Effort</p>
-                        <ul>
-                            <li>Reach: # of users/systems affected</li>
-                            <li>Impact: 3=massive, 2=high, 1=medium, 0.5=low</li>
-                            <li>Confidence: 100%=high, 80%=medium, 50%=low</li>
-                            <li>Effort: person-weeks</li>
-                        </ul>
-                        <p>Start with the highest-scoring component.</p>
-                    </div>
-                `
-            };
-            return guides[strategy] || '';
-        }
-
-        function generateFinalBrief() {
-            const date = new Date().toLocaleDateString();
-            const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
-            const challengesList = projectData.challenges.map((c, i) => `<li>${c}</li>`).join('');
-            
-            const ticketsList = projectData.tickets.map((ticket, i) => `
-                <div class="ticket-card" id="ticket-${i}" style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-tertiary); border-left: 3px solid var(--teal); border-radius: 0.25rem; position: relative;">
-                    <h4 style="margin-top: 0; color: var(--teal-light);">🎫 ${ticket.title || 'Untitled Ticket'}</h4>
-                    <p style="margin: 0.5rem 0 1rem 0; color: var(--text-secondary);">${ticket.description || 'No description provided'}</p>
-                    <button onclick="createTicketInJira(${i})" class="jira-create-btn" style="padding: 0.5rem 1rem; background: var(--teal); color: white; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;">
-                        Create in JIRA
-                    </button>
-                    <span id="status-${i}" style="margin-left: 0.5rem; font-size: 0.875rem;"></span>
-                </div>
-            `).join('');
-            
-            const brief = `
-                <h3>🎯 Project Planning Brief</h3>
-                
-                <h4>Problem Statement</h4>
-                <p>${projectData.problem}</p>
-                
-                <h4>Success Criteria</h4>
-                <p>${projectData.success}</p>
-                
-                <h4>Key Challenges</h4>
-                <ol>${challengesList}</ol>
-                
-                <h4>Major Components (${projectData.decompositionType} decomposition)</h4>
-                <pre>${componentsFormatted}</pre>
-                
-                <h4>Starting Strategy: ${capitalizeStrategy(projectData.strategy)}</h4>
-                <p>${getStrategyDescription(projectData.strategy)}</p>
-                
-                <h4>Initial JIRA Tickets to Create</h4>
-                ${ticketsList}
-                
-                <button onclick="createAllTickets()" id="create-all-btn" style="margin: 1rem 0; padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;">
-                    🚀 Create All Tickets in JIRA
-                </button>
-                <div id="batch-status" style="margin: 1rem 0; font-size: 0.875rem;"></div>
-                
-                <div class="admonition">
-                    <h4>📅 Next Actions</h4>
-                    <ul class="checklist">
-                        <li>Copy this and clean it up with AI</li>
-                        <li>Create these tickets in JIRA</li>
-                        <li>Talk it through with someone</li>
-                        <li>Start the first task</li>
-                        <li>Update as you learn more</li>
-                    </ul>
-                </div>
-                
-                <p style="margin-top: 2rem; color: var(--text-secondary); font-size: 0.875rem;">
-                    <em>Generated: ${date}</em>
-                </p>
-            `;
-            
-            document.getElementById('finalBrief').innerHTML = brief;
-        }
-
-        function capitalizeStrategy(strategy) {
-            const names = {
-                spike: 'Investigation First',
-                skeleton: 'Proof of Concept',
-                dependency: 'Foundation First',
-                risk: 'Highest Impact First',
-                value: 'Quick Win First',
-                rice: 'Impact Scoring'
-            };
-            return names[strategy] || strategy;
-        }
-
-        function getStrategyDescription(strategy) {
-            const descriptions = {
-                spike: 'Time-boxed investigation to understand root cause and validate solution approach.',
-                skeleton: 'Test proposed fix in staging with realistic load before production deployment.',
-                dependency: 'Build observability, runbooks, and safety mechanisms before making changes.',
-                risk: 'Address highest-impact reliability issues first to stop error budget bleeding.',
-                value: 'Quick operational wins that reduce toil and prove value immediately.',
-                rice: 'Score and prioritize based on Reliability Impact, Toil Saved, Confidence, and Effort.'
-            };
-            return descriptions[strategy] || '';
-        }
-
-        async function createTicketInJira(index) {
-            const ticket = projectData.tickets[index];
-            const statusEl = document.getElementById(`status-${index}`);
-            const btnEl = document.querySelector(`#ticket-${index} .jira-create-btn`);
-            
-            if (!ticket.title) {
-                statusEl.textContent = '⚠️ Title required';
-                statusEl.style.color = 'var(--danger)';
-                return;
-            }
-            
-            statusEl.textContent = '⏳ Creating...';
-            statusEl.style.color = 'var(--text-secondary)';
-            btnEl.disabled = true;
-            btnEl.style.opacity = '0.5';
-            
-            try {
-                const result = await createJiraTicket(ticket.title, ticket.description);
-                const ticketUrl = `https://${result.domain}/browse/${result.key}`;
-                statusEl.innerHTML = `✅ <a href="${ticketUrl}" target="_blank" style="color: var(--teal); text-decoration: underline;">${result.key}</a>`;
-                btnEl.textContent = 'Created!';
-                btnEl.style.background = 'var(--success)';
-            } catch (error) {
-                console.error('Failed to create ticket:', error);
-                statusEl.textContent = `❌ ${error.message}`;
-                statusEl.style.color = 'var(--danger)';
-                btnEl.disabled = false;
-                btnEl.style.opacity = '1';
-            }
-        }
-        
-        async function createAllTickets() {
-            const btnEl = document.getElementById('create-all-btn');
-            const statusEl = document.getElementById('batch-status');
-            
-            if (projectData.tickets.length === 0) {
-                statusEl.textContent = '⚠️ No tickets to create';
-                statusEl.style.color = 'var(--danger)';
-                return;
-            }
-            
-            btnEl.disabled = true;
-            btnEl.style.opacity = '0.5';
-            statusEl.textContent = '⏳ Creating tickets...';
-            statusEl.style.color = 'var(--text-secondary)';
-            
-            try {
-                const results = await createMultipleJiraTickets(
-                    projectData.tickets,
-                    (current, total) => {
-                        statusEl.textContent = `⏳ Creating ${current} of ${total} tickets...`;
-                    }
-                );
-                
-                // Update individual ticket displays
-                results.forEach((result, index) => {
-                    if (result.success) {
-                        const ticketUrl = `https://${result.domain}/browse/${result.key}`;
-                        const statusSpan = document.getElementById(`status-${index}`);
-                        const btnElement = document.querySelector(`#ticket-${index} .jira-create-btn`);
-                        
-                        if (statusSpan && btnElement) {
-                            statusSpan.innerHTML = `✅ <a href="${ticketUrl}" target="_blank" style="color: var(--teal); text-decoration: underline;">${result.key}</a>`;
-                            btnElement.textContent = 'Created!';
-                            btnElement.style.background = 'var(--success)';
-                            btnElement.disabled = true;
-                        }
-                    }
-                });
-                
-                const successCount = results.filter(r => r.success).length;
-                statusEl.innerHTML = `✅ Created ${successCount} of ${projectData.tickets.length} tickets successfully!`;
-                statusEl.style.color = 'var(--success)';
-                btnEl.textContent = 'All Created!';
-                btnEl.style.background = 'var(--success)';
-            } catch (error) {
-                console.error('Failed to create tickets:', error);
-                statusEl.textContent = `❌ ${error.message}`;
-                statusEl.style.color = 'var(--danger)';
-                btnEl.disabled = false;
-                btnEl.style.opacity = '1';
-            }
-        }
-
-        function downloadBrief() {
-            const markdown = generateMarkdownBrief();
-            const blob = new Blob([markdown], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const timestamp = new Date().toISOString().split('T')[0];
-            a.download = `project-brief-${timestamp}.md`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function generateMarkdownBrief() {
-            const date = new Date().toLocaleDateString();
-            const componentsFormatted = projectData.components.map((c, i) => `${i + 1}. ${c}`).join('\n');
-            const challengesFormatted = projectData.challenges.map((c, i) => `${i + 1}. ${c}`).join('\n');
-            const ticketsFormatted = projectData.tickets.map((ticket, i) => 
-                `### Ticket ${i + 1}: ${ticket.title || 'Untitled'}\n${ticket.description || 'No description'}\n`
-            ).join('\n');
-            
-            return `# Project Planning Brief
-
-## Problem Statement
-${projectData.problem}
-
-## Success Criteria
-${projectData.success}
-
-## Key Challenges
-${challengesFormatted}
-
-## Major Components (${projectData.decompositionType} decomposition)
-${componentsFormatted}
-
-## Starting Strategy: ${capitalizeStrategy(projectData.strategy)}
-${getStrategyDescription(projectData.strategy)}
-
-## Initial JIRA Tickets to Create
-${ticketsFormatted}
-
-## Next Actions
-- [ ] Copy this and clean it up with AI
-- [ ] Create these tickets in JIRA
-- [ ] Talk it through with someone
-- [ ] Start the first task
-- [ ] Update as you learn more
-
----
-*Generated: ${date}*
-`;
-        }
-
-        function resetWizard() {
-            if (confirm('Are you sure you want to start over? This will clear all your inputs.')) {
-                location.reload();
-            }
-        }
-
-        function showReference(topic) {
-            alert('Reference sections coming soon! For now, check out the markdown version for full details.');
-        }
-
-        // Smooth scroll and active nav highlighting (existing code)
-        const navLinks = document.querySelectorAll('.nav-links a');
-        const sections = document.querySelectorAll('.section');
-        const backToTopButton = document.getElementById('backToTop');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                
-                // Only prevent default for internal anchor links
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-                // External links (http/https) will work normally
-            });
-        });
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -35% 0px',
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${id}`) {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(section => observer.observe(section));
-
-        const content = document.querySelector('.content');
-        if (content) {
-            content.addEventListener('scroll', () => {
-                if (content.scrollTop > 500) {
-                    backToTopButton.classList.add('visible');
-                } else {
-                    backToTopButton.classList.remove('visible');
-                }
-            });
-        }
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 500) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
-
-        if (backToTopButton) {
-            backToTopButton.addEventListener('click', () => {
-                if (content) {
-                    content.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
-        }
-
-        if (navLinks.length > 0) {
-            navLinks[0].classList.add('active');
-        }
-
-        // Landing Page: Time Display and Navigation
-        const landingPage = document.getElementById('landingPage');
-        const planningWizard = document.getElementById('planningWizard');
-        const dayDisplay = document.getElementById('dayDisplay');
-        const timeDisplay = document.getElementById('timeDisplay');
-        const newProjectBtn = document.getElementById('newProjectBtn');
-        const keepWorkingBtn = document.getElementById('keepWorkingBtn');
-        const workLinksBox = document.getElementById('workLinksBox');
-
-        function updateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
-            
-            // Update day display with full date
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                           'July', 'August', 'September', 'October', 'November', 'December'];
-            
-            const dayName = days[now.getDay()];
-            const monthName = months[now.getMonth()];
-            const date = now.getDate();
-            const year = now.getFullYear();
-            
-            // Add ordinal suffix (st, nd, rd, th)
-            let suffix = 'th';
-            if (date % 10 === 1 && date !== 11) suffix = 'st';
-            else if (date % 10 === 2 && date !== 12) suffix = 'nd';
-            else if (date % 10 === 3 && date !== 13) suffix = 'rd';
-            
-            dayDisplay.textContent = `${dayName} ${monthName} ${date}${suffix} ${year}`;
-        }
-
-        // Update time immediately and then every second
-        updateTime();
-        setInterval(updateTime, 1000);
-
-        // Handle New Project button click
-        newProjectBtn.addEventListener('click', () => {
-            landingPage.classList.add('hidden');
-            planningWizard.classList.remove('hidden');
-        });
-
-        // Handle Back to Home button click
-        const backToHomeBtn = document.getElementById('backToHomeBtn');
-        backToHomeBtn.addEventListener('click', () => {
-            planningWizard.classList.add('hidden');
-            landingPage.classList.remove('hidden');
-        });
-
-        // Handle Keep Working button click
-        keepWorkingBtn.addEventListener('click', () => {
-            workLinksBox.classList.toggle('visible');
-        });
-
-        // Handle Priorities
-        const prioritiesForm = document.getElementById('prioritiesForm');
-        const pinnedPriorities = document.getElementById('pinnedPriorities');
-        const prioritiesList = document.getElementById('prioritiesList');
-        const unpinBtn = document.getElementById('unpinBtn');
-
-        // Load saved priorities on page load
-        function loadPriorities() {
-            const saved = localStorage.getItem('todaysPriorities');
-            if (saved) {
-                const priorities = JSON.parse(saved);
-                const savedDate = localStorage.getItem('prioritiesDate');
-                const today = new Date().toDateString();
-                
-                // Only show if they're from today
-                if (savedDate === today) {
-                    displayPriorities(priorities);
-                    // Pre-fill form
-                    document.getElementById('priority1').value = priorities[0] || '';
-                    document.getElementById('priority2').value = priorities[1] || '';
-                    document.getElementById('priority3').value = priorities[2] || '';
-                }
-            }
-        }
-
-        function displayPriorities(priorities) {
-            prioritiesList.innerHTML = '';
-            priorities.forEach(priority => {
-                if (priority.trim()) {
-                    const li = document.createElement('li');
-                    li.textContent = priority;
-                    prioritiesList.appendChild(li);
-                }
-            });
-            pinnedPriorities.classList.add('visible');
-        }
-
-        prioritiesForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const priorities = [
-                document.getElementById('priority1').value.trim(),
-                document.getElementById('priority2').value.trim(),
-                document.getElementById('priority3').value.trim()
-            ];
-            
-            // Save to localStorage
-            localStorage.setItem('todaysPriorities', JSON.stringify(priorities));
-            localStorage.setItem('prioritiesDate', new Date().toDateString());
-            
-            displayPriorities(priorities);
-            workLinksBox.classList.remove('visible');
-        });
-
-        unpinBtn.addEventListener('click', () => {
-            pinnedPriorities.classList.remove('visible');
-            localStorage.removeItem('todaysPriorities');
-            localStorage.removeItem('prioritiesDate');
-        });
-
-        // Load priorities on page load
-        loadPriorities();
-    </script>
+    <script src="runbook.js"></script>
     <script src="jira-api.js"></script>
 </body>
 </html>
