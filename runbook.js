@@ -130,6 +130,7 @@ function proceedFromUnderstanding() {
         block: 'center' 
     });
     currentStep = 1;
+    updateProgressBar(1);
 }
 
 // Step management
@@ -195,6 +196,38 @@ function completeStep(stepNum) {
             block: 'center' 
         });
         currentStep = stepNum + 1;
+    }
+    
+    // Update progress bar
+    updateProgressBar(stepNum + 1);
+}
+
+// Update progress bar with encouraging messages
+function updateProgressBar(activeStep) {
+    const messages = {
+        0: "Let's figure out what you need to get started",
+        1: "🎯 Nice! You've got clarity on the problem",
+        2: "💪 Great work naming those blockers",
+        3: "🧩 Awesome! You've broken it into chunks",
+        4: "🚀 Perfect! You've picked your approach",
+        5: "📝 Almost there! Create a few tickets to start",
+        6: "🎉 You did it! You've turned overwhelm into action"
+    };
+    
+    // Update progress circles
+    document.querySelectorAll('.progress-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if (index < activeStep) {
+            step.classList.add('completed');
+        } else if (index === activeStep) {
+            step.classList.add('active');
+        }
+    });
+    
+    // Update message
+    const messageEl = document.getElementById('progressMessage');
+    if (messageEl && messages[activeStep]) {
+        messageEl.textContent = messages[activeStep];
     }
 }
 
@@ -277,9 +310,12 @@ function getStrategyGuidance(strategy) {
                     "A Walking Skeleton is a tiny implementation of the system that performs a small end-to-end function. It need not use the final architecture, but it should link together the main architectural components."
                     <br>— Alistair Cockburn, Growing Object-Oriented Software
                 </blockquote>
-                <p><strong>First task:</strong> Build the simplest end-to-end flow that touches all major components.</p>
-                <p><strong>Goal:</strong> Prove the architecture works before adding features. Identify integration issues early.</p>
-                <p><strong>Example:</strong> "Create minimal dashboard that fetches one ticket from the API and displays it"</p>
+                <p><strong>🎯 What this means for you:</strong> Build the simplest possible version that touches all the pieces. Even if it's clunky or hardcoded.</p>
+                <p><strong>✅ Why this helps:</strong> Gives you a concrete "done" milestone. You'll see progress fast and learn where the integration points are.</p>
+                <p><strong>💡 Example first ticket:</strong> "Create basic page that fetches one item from API and displays it" - proves the whole flow works.</p>
+                <div class="encouragement">
+                    ⚡ <strong>Ask yourself:</strong> What's the absolute simplest thing that would prove this can work end-to-end?
+                </div>
             </div>
         `,
         risk: `
@@ -289,9 +325,12 @@ function getStrategyGuidance(strategy) {
                     "If you tackle the riskiest things first, you maximize the chance that you'll know about big problems when there's still time to deal with them."
                     <br>— Kent Beck, Extreme Programming Explained
                 </blockquote>
-                <p><strong>First task:</strong> Tackle the component with the most uncertainty or technical risk.</p>
-                <p><strong>Why:</strong> Fail fast if it won't work, or build confidence early if it will.</p>
-                <p><strong>Example:</strong> "Prototype real-time sync between two systems to prove latency is acceptable"</p>
+                <p><strong>🎯 What this means for you:</strong> Whatever part makes you most anxious? That's probably your biggest risk. Test it first.</p>
+                <p><strong>✅ Why this helps:</strong> Removes uncertainty early. You'll either know it won't work (and can pivot), or know it will (and feel confident moving forward).</p>
+                <p><strong>💡 Example first ticket:</strong> "Spike: Test if System A can talk to System B with acceptable latency" - answers the scary question.</p>
+                <div class="encouragement">
+                    💪 <strong>Ask yourself:</strong> What's the thing I'm most worried about? What keeps me up at night about this project?
+                </div>
             </div>
         `,
         value: `
@@ -301,9 +340,12 @@ function getStrategyGuidance(strategy) {
                     "The minimum viable product is that version of a new product which allows a team to collect the maximum amount of validated learning about customers with the least effort."
                     <br>— Eric Ries, The Lean Startup
                 </blockquote>
-                <p><strong>First task:</strong> Build the smallest feature that delivers immediate user value.</p>
-                <p><strong>Benefit:</strong> Quick wins, early user feedback, stakeholder confidence, faster learning.</p>
-                <p><strong>Example:</strong> "Manual ticket import button - gets them unblocked today, automate later"</p>
+                <p><strong>🎯 What this means for you:</strong> Deliver something useful ASAP. Even if it's manual, hacky, or incomplete.</p>
+                <p><strong>✅ Why this helps:</strong> Quick wins build momentum. You'll get real feedback fast and learn what actually matters to users.</p>
+                <p><strong>💡 Example first ticket:</strong> "Manual import button for tickets" - solves the problem now, shows value immediately. Automate it later once you have momentum.</p>
+                <div class="encouragement">
+                    🚀 <strong>Ask yourself:</strong> What's the smallest thing I could build that would actually help someone today?
+                </div>
             </div>
         `
     };
@@ -431,9 +473,9 @@ function capitalizeStrategy(strategy) {
 
 function getStrategyDescription(strategy) {
     const descriptions = {
-        skeleton: 'Build the simplest end-to-end implementation to prove the architecture works.',
-        risk: 'Tackle the biggest technical uncertainty or risk first to fail fast or build confidence.',
-        value: 'Deliver the smallest feature that provides immediate value to users.'
+        skeleton: '**Walking Skeleton** - Build end-to-end first (even if minimal), then add features. Proves it works before you invest too much.',
+        risk: '**Risk-First** - Tackle the scariest part first. If it fails, you know early. If it works, everything else feels easier.',
+        value: '**Value-First** - Ship something useful fast (even if manual/incomplete). Get wins on the board and learn from real use.'
     };
     return descriptions[strategy] || '';
 }
