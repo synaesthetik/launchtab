@@ -56,14 +56,15 @@ The language throughout the wizard acts as your thinking partner, helping you wo
 
 1. Click the extension icon in your browser toolbar
 2. Click "Configure JIRA"
-3. Enter your JIRA credentials:
+3. Enter your JIRA settings:
    - **JIRA Domain**: Your Atlassian domain (e.g., `yourcompany.atlassian.net`)
-   - **Email**: Your Atlassian account email
-   - **API Token**: Generate one at [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
-   - **Project Key**: Default project for tickets (e.g., `DS`, `ENG`)
-   - **Issue Type**: Default type (Task, Story, Bug)
-4. Click "Test JIRA Connection" to verify
-5. Save your settings
+   - **Project ID**: Numeric project ID (e.g., `11861`)
+   - **Issue Type ID**: Numeric issue type ID (e.g., `3` for Task)
+4. Save your settings
+
+**Finding your Project ID and Issue Type ID:**
+- Project ID: Go to Project Settings → Details, or check the URL when creating an issue (pid=11861)
+- Issue Type ID: Go to Project Settings → Issue Types, or inspect the issue type in JIRA settings
 
 ## Usage
 
@@ -74,27 +75,28 @@ Every new tab will open the LaunchTab planner.
 ### Planning Wizard
 
 1. **Step 0**: Check if you have enough context
-2. **Step 1**: Describe the problem and success criteria
-3. **Step 2**: List your 3 biggest challenges
-4. **Step 3**: Break down into components
-5. **Step 4**: Choose your starting strategy
-6. **Step 5**: Create JIRA tickets with title and description
-7. **Step 6**: Review and export your plan
+2. **Step 1**: Define the problem with clear WHO/WHAT/WHY framework
+3. **Step 2**: Identify constraints using Theory of Constraints
+4. **Step 3**: Break down into components/actions/flow stages
+5. **Step 4**: Choose your starting strategy (Walking Skeleton, Risk-First, or Value-First)
+6. **Step 5**: Create actionable JIRA tickets with SMART criteria
+7. **Step 6**: Review your plan and next steps
 
 ### Creating JIRA Tickets
 
 After completing the wizard:
-- Each ticket has a "Create in JIRA" button
-- Click to create the ticket directly in your configured JIRA project
-- Tickets are created with the title and description you provided
-- View the created ticket link after successful creation
+- Click the "🚀 Create in JIRA" button to open all tickets in your browser
+- Each ticket opens in a new tab with pre-filled title and description
+- Review and submit each ticket in your JIRA instance
+- Works with SSO and Okta-protected JIRA instances
 
 ## Security
 
-- Credentials are stored securely in Chrome's sync storage
-- API tokens are never exposed in the UI (password field)
-- All API calls use HTTPS
-- No data is sent to third-party servers (direct JIRA API calls only)
+- Settings are stored locally in Firefox's storage API
+- No API tokens or credentials required
+- JIRA integration uses URL parameters to open pre-filled tickets
+- You authenticate directly with your JIRA instance in your browser
+- No data is sent to third-party servers
 
 ## Files Structure
 
@@ -102,20 +104,21 @@ After completing the wizard:
 launchtab/
 ├── manifest.json                    # Extension configuration
 ├── project-management-runbook.html  # Main planner page (new tab)
+├── runbook.js                       # Main application logic
 ├── options.html                     # Settings page
 ├── options.js                       # Settings logic
 ├── popup.html                       # Extension popup
 ├── popup.js                         # Popup logic
-├── jira-api.js                      # JIRA API utilities
+├── jira-api.js                      # JIRA utilities
 └── icons/                           # Extension icons (16, 48, 128px)
 ```
 
 ## TODO
 
-- [ ] Add proper extension icons
-- [ ] Add ticket status tracking
 - [ ] Support for multiple JIRA projects
 - [ ] Export/import planning templates
+- [ ] Keyboard shortcuts for common actions
+- [ ] Auto-save wizard progress
 
 ## Development
 
@@ -124,8 +127,8 @@ launchtab/
 To modify the extension:
 
 1. Make your changes to the files
-2. Go to `chrome://extensions/` or `about:debugging` in Firefox
-3. Click the refresh icon on the LaunchTab extension
+2. Go to `about:debugging#/runtime/this-firefox` in Firefox
+3. Click the "Reload" button on the LaunchTab extension
 4. Open a new tab to see your changes
 
 ### Releasing New Versions
@@ -166,11 +169,12 @@ For detailed CI/CD setup instructions (API credentials, workflow configuration, 
 
 ## Troubleshooting
 
-**JIRA connection fails:**
-- Verify your API token is correct
-- Check that your email matches your Atlassian account
+**JIRA tickets don't open correctly:**
+- Verify your Project ID and Issue Type ID are numeric values
 - Ensure your domain is correct (without `https://`)
+- Make sure you're logged into your JIRA instance in Firefox
 - Confirm you have permission to create issues in the project
+- Check that pop-ups are allowed for your JIRA domain
 
 **Extension doesn't load:**
 - Check the browser console for errors
