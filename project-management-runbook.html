@@ -1206,7 +1206,7 @@
                         <div class="step-title">Do you have enough context?</div>
                     </div>
                     <div class="encouragement">
-                        💡 <strong>Real talk:</strong> It's completely okay if you don't have all the answers yet. We'll help you figure out what you need.
+                        💡 <strong>Research shows:</strong> Complex problems can't be fully understood upfront. You learn by taking action, not by planning perfectly. "Good enough" context is exactly where you should start.
                     </div>
                     <div class="input-group">
                         <label style="font-size: 1.125rem; margin-bottom: 1rem;">Do you have a rough idea of what you're trying to solve?</label>
@@ -1218,9 +1218,6 @@
                     <div class="reveal" id="needInfoPath">
                         <div class="encouragement">
                             👍 <strong>Good call!</strong> Better to gather context first than to plan in the dark.
-                        </div>
-                        <div class="admonition warning">
-                            <p><strong>Pick just ONE thing to start with:</strong></p>
                         </div>
                         <div class="admonition tip">
                             <h4>🔍 Where to look for context:</h4>
@@ -1261,21 +1258,21 @@
                 <div class="step" id="step1">
                     <div class="step-header">
                         <div class="step-number">1</div>
-                        <div class="step-title">Brain Dump <span class="time-estimate">⏱️ 3-5 min</span></div>
+                        <div class="step-title">Define the Problem <span class="time-estimate">⏱️ 3-5 min</span></div>
                     </div>
                     <div class="encouragement">
-                        ✍️ <strong>Just write - don't edit.</strong> This is a brain dump, not a polished document. Messy is fine. Incomplete is fine.
+                        🎯 <strong>Be specific.</strong> Clear problem statements lead to clear solutions. Answer: Who's affected? What's broken? Why does it matter?
                     </div>
                     <div class="input-group">
-                        <label for="problemStatement">What's the situation? (No need to be formal)</label>
-                        <textarea id="problemStatement" placeholder="Quick version: What's broken? What's annoying you? What keeps coming up?&#10;&#10;Don't overthink this - you can always refine it later."></textarea>
+                        <label for="problemStatement">Problem Statement - What's happening now?</label>
+                        <textarea id="problemStatement" placeholder="Structure your answer:&#10;&#10;• WHO is impacted: [users/team/customers/system]&#10;• WHAT is broken/missing/slow: [specific issue]&#10;• WHY it matters: [impact on business/users/operations]&#10;&#10;Example: 'Support engineers spend 2+ hours daily manually syncing ticket data between Zendesk and JIRA, causing delays in customer responses and frequent data errors that require additional manual fixes.'"></textarea>
                     </div>
                     <div class="input-group">
-                        <label for="successCriteria">What would 'better' look like? (Doesn't have to be perfect)</label>
-                        <textarea id="successCriteria" placeholder="Think small wins: What would make your day easier? What would you stop doing manually?&#10;&#10;Even a vague idea is better than nothing."></textarea>
+                        <label for="successCriteria">Success Criteria - What does 'done' look like?</label>
+                        <textarea id="successCriteria" placeholder="Define the end state:&#10;&#10;• WHAT changes: [observable behavior/metric]&#10;• WHAT becomes possible: [new capabilities]&#10;• HOW you know it's working: [measurable outcome]&#10;&#10;Example: 'Ticket sync happens automatically every 15 minutes with zero manual intervention. Support engineers save 10+ hours/week. Data discrepancies drop to <1% and are flagged automatically for review.'"></textarea>
                     </div>
                     <div class="encouragement">
-                        💭 <strong>Think out loud here.</strong> What's frustrating you? What would make it better? Write like you're explaining it to a teammate. (You can refine this later.)
+                        � <strong>Clarity test:</strong> Read your statements back. Would someone unfamiliar with this problem understand what's broken and what success looks like? If not, add specifics: numbers, timelines, or concrete examples.
                     </div>
                     <button class="btn" data-action="complete-step" data-step="1">Next →</button>
                 </div>
@@ -1286,31 +1283,31 @@
                 <div class="step" id="step2">
                     <div class="step-header">
                         <div class="step-number">2</div>
-                        <div class="step-title">What's in the way? <span class="time-estimate">⏱️ 2-3 min</span></div>
+                        <div class="step-title">Identify Constraints <span class="time-estimate">⏱️ 2-3 min</span></div>
                     </div>
                     <div class="output-box" id="problemSummary"></div>
                     
                     <div class="encouragement">
-                        🚧 <strong>Name the blockers.</strong> What makes this feel hard? Identifying obstacles gives you power over them.
+                        🔍 <strong>Theory of Constraints:</strong> Most problems have 1-3 real bottlenecks. Everything else is just symptoms. Ask: "If I solved THIS, would the other issues disappear?"
                     </div>
 
                     <div class="input-group">
-                        <label for="challenge1">Biggest thing making this feel overwhelming:</label>
-                        <input type="text" id="challenge1" placeholder="e.g., 'too many unknowns', 'limited time', 'depends on another team'...">
+                        <label for="challenge1">Primary Constraint - What's the biggest bottleneck?</label>
+                        <input type="text" id="challenge1" placeholder="e.g., 'We don't have API access to their system', 'Team doesn't have time to review PRs', 'Database can't handle the load'">
                     </div>
 
                     <div class="input-group">
-                        <label for="challenge2">Second blocker:</label>
-                        <input type="text" id="challenge2" placeholder="What else is in the way?">
+                        <label for="challenge2">Secondary Constraint - What else is blocking?</label>
+                        <input type="text" id="challenge2" placeholder="e.g., 'Need approval from security team', 'Legacy code is undocumented', 'Depends on another team's work'">
                     </div>
 
                     <div class="input-group">
-                        <label for="challenge3">Third blocker (if there is one):</label>
-                        <input type="text" id="challenge3" placeholder="Leave blank if you've covered the main issues">
+                        <label for="challenge3">Third Constraint (optional):</label>
+                        <input type="text" id="challenge3" placeholder="Leave blank if you've identified the core issues">
                     </div>
 
                     <div class="encouragement">
-                        💡 <strong>Pro tip:</strong> Just seeing these written down often makes them feel more manageable.
+                        ✅ <strong>Validation:</strong> For each constraint, ask "Can I do anything about this?" If yes, it's something to work around. If no, it defines your solution space.
                     </div>
 
                     <button class="btn" data-action="complete-step" data-step="2">Next →</button>
@@ -1345,12 +1342,15 @@
                     </div>
 
                     <div class="reveal" id="componentInput">
+                        <div class="encouragement">
+                            📝 <strong>Decomposition principle:</strong> Break until each piece can be done independently. If two pieces depend on each other, they're probably one piece.
+                        </div>
                         <div class="input-group">
-                            <label>List 3-6 main pieces (one per line):</label>
-                            <textarea id="components" rows="6" placeholder="Don't overthink this. Just write what comes to mind.&#10;&#10;Too broad? That's fine.&#10;Too detailed? That's fine too.&#10;&#10;You'll refine as you go."></textarea>
+                            <label>List 3-6 main components (one per line):</label>
+                            <textarea id="components" rows="6" placeholder="Make each component:&#10;• Independent (can be built/tested alone)&#10;• Specific (clear what it does)&#10;• Completable (has a clear 'done' state)&#10;&#10;Example for 'Automated Ticket Sync':&#10;1. API connector to fetch Zendesk tickets&#10;2. Data transformation layer&#10;3. JIRA ticket creation service&#10;4. Sync scheduler&#10;5. Error handling and logging&#10;6. Admin dashboard for monitoring"></textarea>
                         </div>
                         <div class="encouragement">
-                            ⚡ <strong>Stuck?</strong> Ask yourself: "If I had to explain the main parts to my manager right now, what would I say?"
+                            ✅ <strong>Quick check:</strong> Could you assign each component to a different person and they'd know what to build? If not, add more detail.
                         </div>
                         <button class="btn" data-action="complete-step" data-step="3">Next →</button>
                     </div>
@@ -1401,15 +1401,15 @@
                 <div class="step" id="step5">
                     <div class="step-header">
                         <div class="step-number">5</div>
-                        <div class="step-title">First few tickets <span class="time-estimate">⏱️ 3-5 min</span></div>
+                        <div class="step-title">Create Actionable Tickets <span class="time-estimate">⏱️ 3-5 min</span></div>
                     </div>
 
                     <div class="encouragement">
-                        📝 <strong>Just create 1-3 tickets to start.</strong> You don't need the whole plan - just enough to take action today.
+                        🎯 <strong>User Story format:</strong> "As a [who], I need [what], so that [why]." Clear actor + action + outcome = clear ticket.
                     </div>
 
                     <div class="admonition">
-                        <p>Think: <strong>"What do I need to do this week?"</strong> Not the whole project.</p>
+                        <p><strong>Make each ticket SMART:</strong> Specific (clear what to build), Measurable (know when done), Achievable (can finish in 1-3 days), Relevant (serves the goal), Time-bound (has a deadline).</p>
                     </div>
 
                     <div id="ticketsContainer">
@@ -1429,10 +1429,6 @@
                         <div class="step-title">You did it! 🎉</div>
                     </div>
 
-                    <div class="encouragement">
-                        🏆 <strong>Seriously, well done.</strong> You turned vague anxiety into concrete next steps. That's the hard part.
-                    </div>
-
                     <div class="info-box success">
                         <p>Here's your brain dump, organized. Copy this and refine it with AI, or share it as-is with your team.</p>
                     </div>
@@ -1442,7 +1438,7 @@
                     </div>
 
                     <div class="admonition tip">
-                        <h4>What to do right now (pick ONE):</h4>
+                        <h4>What to do next:</h4>
                         <ul class="checklist">
                             <li><strong>🎫 Create your first ticket in JIRA</strong> - Get something on the board. Momentum beats perfection.</li>
                             <li><strong>🤖 Refine this with AI</strong> - Paste into ChatGPT/Claude: <em>"Clean this up and make it stakeholder-ready"</em></li>

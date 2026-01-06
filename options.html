@@ -154,22 +154,22 @@
         <form id="settingsForm">
             <div class="form-group">
                 <label for="jiraDomain">JIRA Domain</label>
-                <input type="text" id="jiraDomain" placeholder="greenhouseio.atlassian.net" required>
+                <input type="text" id="jiraDomain" placeholder="yourcompany.atlassian.net" required>
                 <p class="help-text">Your Atlassian domain (without https://)</p>
             </div>
 
             <div class="form-group">
-                <label for="jiraEmail">Email</label>
-                <input type="text" id="jiraEmail" placeholder="your.email@company.com" required>
-                <p class="help-text">Your Atlassian account email</p>
+                <label for="jiraEmail">Email (optional)</label>
+                <input type="text" id="jiraEmail" placeholder="your.email@company.com">
+                <p class="help-text">Only needed if using API-based ticket creation (not required for URL-based creation)</p>
             </div>
 
             <div class="form-group">
-                <label for="jiraToken">API Token</label>
-                <input type="password" id="jiraToken" placeholder="••••••••••••••••" required>
+                <label for="jiraToken">API Token (optional)</label>
+                <input type="password" id="jiraToken" placeholder="••••••••••••••••">
                 <p class="help-text">
-                    Generate one at 
-                    <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Atlassian API Tokens</a>
+                    Only needed for API-based ticket creation. LaunchTab uses URL-based creation by default.
+                    <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Generate token</a>
                 </p>
             </div>
 

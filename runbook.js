@@ -258,8 +258,16 @@ function displayComponentsSummary() {
     const summaryEl = document.getElementById('componentsSummary');
     summaryEl.innerHTML = '';
     
+    const typeLabels = {
+        infrastructure: 'Components',
+        tasks: 'Actions',
+        workflow: 'Flow Stages'
+    };
+    
+    const typeLabel = typeLabels[projectData.decompositionType] || 'Components';
+    
     const h4 = document.createElement('h4');
-    h4.textContent = `🏗️ Your Major Components (${projectData.decompositionType} approach)`;
+    h4.textContent = `🏗️ Your ${typeLabel} (${projectData.decompositionType} approach)`;
     summaryEl.appendChild(h4);
     
     const ul = document.createElement('ul');
@@ -279,6 +287,28 @@ function selectDecomposition(type) {
         card.classList.remove('selected');
     });
     event.target.closest('.option-card').classList.add('selected');
+
+    // Update label and placeholder based on type
+    const label = document.querySelector('#componentInput label');
+    const textarea = document.getElementById('components');
+    
+    const config = {
+        infrastructure: {
+            label: 'List 3-6 main components (one per line):',
+            placeholder: `Make each component:\n• Independent (can be built/tested alone)\n• Specific (clear what it does)\n• Completable (has a clear 'done' state)\n\nExample for 'Automated Ticket Sync':\n1. API connector to fetch Zendesk tickets\n2. Data transformation layer\n3. JIRA ticket creation service\n4. Sync scheduler\n5. Error handling and logging\n6. Admin dashboard for monitoring`
+        },
+        tasks: {
+            label: 'List 3-6 main actions (one per line):',
+            placeholder: `Make each action:\n• Clear outcome (what gets done)\n• Specific (not vague like "research")\n• Completable (has a clear 'done' state)\n\nExample for 'Automated Ticket Sync':\n1. Research JIRA and Zendesk API capabilities\n2. Design data mapping between systems\n3. Build sync engine\n4. Test with sample data\n5. Deploy to staging environment\n6. Roll out to production`
+        },
+        workflow: {
+            label: 'List 3-6 flow stages (one per line):',
+            placeholder: `Make each stage:\n• Sequential (one leads to next)\n• Clear trigger/outcome\n• Completable (has a clear 'done' state)\n\nExample for 'Automated Ticket Sync':\n1. User creates ticket in Zendesk\n2. System detects new ticket\n3. Data gets transformed to JIRA format\n4. Ticket created in JIRA with link\n5. Both systems stay in sync\n6. User sees confirmation`
+        }
+    };
+    
+    label.textContent = config[type].label;
+    textarea.placeholder = config[type].placeholder;
 
     // Show component input
     document.getElementById('componentInput').classList.add('open');
