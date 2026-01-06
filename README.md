@@ -6,11 +6,41 @@ A browser extension that helps you plan projects and create JIRA tickets directl
 
 - 🎯 Stream-of-consciousness project planning wizard
 - 📋 Structured JIRA ticket creation
-- 🔗 Direct JIRA API integration
-- 💾 Secure credential storage
+- 🔗 Opens pre-filled JIRA tickets in your browser
+- 🧠 Research-backed planning strategies (Walking Skeleton, Risk-First, Value-First)
 - 🌓 Dark theme interface
 - ⏰ Time and date display
-- ✅ Daily priorities tracker
+- 💾 Secure settings storage
+
+## Design Philosophy: ADHD-Friendly Planning
+
+LaunchTab is specifically designed to help overcome common ADHD obstacles in project planning:
+
+### 🎯 Combat Decision Paralysis
+- **Clear guidance at every step** - No blank pages to stare at
+- **Concrete examples** - Shows you what "good enough" looks like
+- **Time estimates** - Each step shows how long it should take (⏱️ 3-5 min)
+- **Strategic reassurance** - Reminds you that you can adjust as you learn
+
+### 💪 Build Momentum
+- **Visual progress tracking** - Sticky progress bar shows completed steps with animations
+- **Encouraging messages** - "🎯 Nice! You've got clarity on the problem"
+- **Small wins celebrated** - Each completed step gives positive feedback
+- **Quick start focus** - Only asks for 1-3 initial tickets, not the whole plan
+
+### 🧠 Reduce Cognitive Load
+- **Coaching questions** - "What's frustrating you?" instead of "Describe the problem"
+- **Think-out-loud prompts** - Encourages brain dumping without editing
+- **Problem-solving frameworks** - Asks "What does this problem need most?" to help you reason through it
+- **Anti-perfectionism messaging** - "Messy is fine. Incomplete is fine."
+
+### 🚀 Lower Activation Energy
+- **Simplified decisions** - 3 clear strategy options with "when to pick this" guidance
+- **Break complex into simple** - Forces you to chunk work into manageable pieces
+- **Action-oriented language** - Focuses on next steps, not analysis paralysis
+- **No rabbit holes** - Warns against disappearing into endless research
+
+The language throughout the wizard acts as your thinking partner, helping you work through planning anxiety and turn overwhelm into concrete action.
 
 ## Installation
 [Pick a version to install here](https://addons.mozilla.org/en-US/developers/addon/df93f9d509504555a47e/versions)
