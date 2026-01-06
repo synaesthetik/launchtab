@@ -138,10 +138,11 @@ function completeStep(stepNum) {
     // Collect data from current step
     switch(stepNum) {
         case 1:
+            projectData.title = document.getElementById('projectTitle').value.trim();
             projectData.problem = document.getElementById('problemStatement').value;
             projectData.success = document.getElementById('successCriteria').value;
-            if (!projectData.problem || !projectData.success) {
-                alert('Please fill in both fields before continuing.');
+            if (!projectData.title || !projectData.problem || !projectData.success) {
+                alert('Please fill in all fields before continuing.');
                 return;
             }
             displayProblemSummary();
@@ -326,8 +327,7 @@ function selectStrategy(strategy) {
     // Show guidance
     const guidance = getStrategyGuidance(strategy);
     const guidanceEl = document.getElementById('strategyGuidance');
-    guidanceEl.innerHTML = '';
-    guidanceEl.insertAdjacentHTML('beforeend', guidance);
+    guidanceEl.innerHTML = guidance;
     guidanceEl.classList.add('open');
 }
 
@@ -389,10 +389,17 @@ function generateFinalBrief() {
     const finalBriefEl = document.getElementById('finalBrief');
     finalBriefEl.innerHTML = '';
     
-    // Title
-    const h3 = document.createElement('h3');
-    h3.textContent = '🎯 Project Planning Brief';
-    finalBriefEl.appendChild(h3);
+    // Project Title
+    const h2 = document.createElement('h2');
+    h2.textContent = projectData.title || 'Project Plan';
+    h2.style.marginBottom = '0.5rem';
+    finalBriefEl.appendChild(h2);
+    
+    const dateP = document.createElement('p');
+    dateP.textContent = `Created: ${date}`;
+    dateP.style.color = 'var(--text-secondary)';
+    dateP.style.marginBottom = '2rem';
+    finalBriefEl.appendChild(dateP);
     
     // Problem Statement
     const h4Problem = document.createElement('h4');
